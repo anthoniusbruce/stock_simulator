@@ -14,6 +14,17 @@ thread_local! {static LOG_FILE_PATH:RefCell<Option<PathBuf>> = RefCell::new(None
 
 fn main() {}
 
+fn perform_simulation_calculation(rates: &Vec<f64>) -> f64 {
+    let base_investment = 100.0;
+    let mut investment = base_investment;
+
+    for rate in rates {
+        investment += investment * rate;
+    }
+
+    investment - base_investment
+}
+
 /// Method to get the simulation data from the comman separated file passed in to the method
 fn get_simulation_data(path: &PathBuf) -> Result<Vec<f64>, Box<dyn Error>> {
     let mut ret: Vec<f64> = Vec::new();
