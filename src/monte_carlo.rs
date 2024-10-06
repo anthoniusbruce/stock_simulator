@@ -1,5 +1,5 @@
 pub mod simulations {
-    use std::collections::HashMap;
+    use std::collections::BTreeMap;
 
     use rand::Rng;
 
@@ -9,7 +9,7 @@ pub mod simulations {
         periods: u32,
         number_of_simulations: u32,
     ) {
-        let mut results = HashMap::new();
+        let mut results = BTreeMap::new();
 
         for _ in 1..number_of_simulations {
             let simulation = simulate_period(&data, periods);
