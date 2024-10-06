@@ -20,6 +20,9 @@ fn main() {
     let periods = 10;
     let number_of_simulations = 1_000_000;
 
+    LOG_FILE_PATH.with(|path| *path.borrow_mut() = Some(PathBuf::from("logs/stock_simulator.log")));
+
+    log(&symbol, "simulation begin");
     let data_result = get_simulation_data(&path);
     match data_result {
         Ok(data) => {
@@ -27,6 +30,7 @@ fn main() {
         }
         Err(e) => log(symbol, e),
     }
+    log(&symbol, "simulation end");
 }
 fn monte_carlo_simulation(data: &Vec<f64>, periods: u32, number_of_simulations: u32) {
     let mut results = HashMap::new();
