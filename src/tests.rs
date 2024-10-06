@@ -1,9 +1,13 @@
 #[cfg(test)]
 mod tests {
+    use core::num;
+    use std::collections::{btree_map, BTreeMap};
     use std::path::PathBuf;
 
     use crate::get_simulation_data;
-    use crate::monte_carlo::simulations::{perform_simulation_calculation, simulate_period};
+    use crate::monte_carlo::simulations::{
+        get_percentiles, perform_simulation_calculation, simulate_period, Percentiles,
+    };
 
     fn vectors_are_equal(v1: Vec<f64>, v2: Vec<f64>) -> bool {
         if v1.iter().count() != v2.iter().count() {
@@ -40,6 +44,174 @@ mod tests {
         }
 
         return true;
+    }
+
+    #[test]
+    fn get_percentiles_less_than_100_in_result() {
+        // assign
+        let number_of_results = 20;
+        let results = BTreeMap::from([
+            (1, 1),
+            (2, 1),
+            (3, 1),
+            (4, 1),
+            (5, 1),
+            (6, 1),
+            (7, 1),
+            (8, 1),
+            (9, 1),
+            (10, 1),
+            (11, 1),
+            (12, 1),
+            (13, 1),
+            (14, 1),
+            (15, 1),
+            (16, 1),
+            (17, 1),
+            (18, 1),
+            (19, 1),
+            (20, 1),
+        ]);
+        let expected = Percentiles {
+            _5th: 1,
+            _15th: 3,
+            _25th: 5,
+            _50th: 10,
+            _75th: 15,
+            _85th: 17,
+            _95th: 19,
+        };
+
+        // act
+        let actual = get_percentiles(&results, number_of_results);
+
+        // assert
+        assert_eq!(actual._5th, expected._5th);
+        assert_eq!(actual._15th, expected._15th);
+        assert_eq!(actual._25th, expected._25th);
+        assert_eq!(actual._50th, expected._50th);
+        assert_eq!(actual._75th, expected._75th);
+        assert_eq!(actual._85th, expected._85th);
+        assert_eq!(actual._95th, expected._95th);
+    }
+
+    #[test]
+    fn get_percentiles_one_in_result_all_that_number() {
+        // assign
+        let number_of_results = 1;
+        let results = BTreeMap::from([(2, 1)]);
+        let expected = Percentiles {
+            _5th: 2,
+            _15th: 2,
+            _25th: 2,
+            _50th: 2,
+            _75th: 2,
+            _85th: 2,
+            _95th: 2,
+        };
+
+        // act
+        let actual = get_percentiles(&results, number_of_results);
+
+        // assert
+        assert_eq!(actual._5th, expected._5th);
+        assert_eq!(actual._15th, expected._15th);
+        assert_eq!(actual._25th, expected._25th);
+        assert_eq!(actual._50th, expected._50th);
+        assert_eq!(actual._75th, expected._75th);
+        assert_eq!(actual._85th, expected._85th);
+        assert_eq!(actual._95th, expected._95th);
+    }
+
+    #[test]
+    fn get_percentiles_happy_path() {
+        // assign
+        let number_of_results = 100;
+        let results = BTreeMap::from([
+            (-44, 1),
+            (-43, 1),
+            (-32, 1),
+            (-30, 1),
+            (-29, 1),
+            (-27, 2),
+            (-26, 2),
+            (-24, 2),
+            (-23, 2),
+            (-20, 2),
+            (-18, 2),
+            (-17, 1),
+            (-16, 3),
+            (-15, 2),
+            (-14, 1),
+            (-13, 2),
+            (-12, 1),
+            (-9, 4),
+            (-8, 3),
+            (-7, 2),
+            (-6, 2),
+            (-5, 1),
+            (-4, 3),
+            (-3, 2),
+            (-1, 1),
+            (2, 2),
+            (3, 2),
+            (5, 1),
+            (6, 1),
+            (7, 2),
+            (11, 1),
+            (12, 2),
+            (13, 3),
+            (14, 1),
+            (17, 2),
+            (18, 3),
+            (22, 1),
+            (23, 5),
+            (24, 1),
+            (25, 3),
+            (27, 1),
+            (28, 1),
+            (29, 1),
+            (30, 1),
+            (32, 1),
+            (34, 1),
+            (35, 1),
+            (37, 1),
+            (38, 1),
+            (40, 1),
+            (41, 1),
+            (46, 1),
+            (47, 1),
+            (50, 1),
+            (53, 1),
+            (54, 1),
+            (56, 2),
+            (61, 2),
+            (63, 1),
+            (65, 1),
+            (66, 1),
+            (94, 1),
+        ]);
+        let expected = Percentiles {
+            _5th: -29,
+            _15th: -20,
+            _25th: -13,
+            _50th: 5,
+            _75th: 25,
+            _85th: 40,
+            _95th: 61,
+        };
+
+        // act
+        let actual = get_percentiles(&results, number_of_results);
+
+        // assert
+        assert_eq!(actual._5th, expected._5th);
+        assert_eq!(actual._15th, expected._15th);
+        assert_eq!(actual._25th, expected._25th);
+        assert_eq!(actual._50th, expected._50th);
+        assert_eq!(actual._75th, expected._75th);
+        assert_eq!(actual._85th, expected._85th);
+        assert_eq!(actual._95th, expected._95th);
     }
 
     #[test]

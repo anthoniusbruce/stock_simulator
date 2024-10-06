@@ -3,6 +3,16 @@ pub mod simulations {
 
     use rand::Rng;
 
+    pub struct Percentiles {
+        pub _5th: i32,
+        pub _15th: i32,
+        pub _25th: i32,
+        pub _50th: i32,
+        pub _75th: i32,
+        pub _85th: i32,
+        pub _95th: i32,
+    }
+
     /// Method that will run a number of monte carlo simulations on the data passed in for the number of periods pass in
     pub(crate) fn monte_carlo_simulation(
         data: &Vec<f64>,
@@ -19,6 +29,42 @@ pub mod simulations {
         }
 
         output_results(results);
+    }
+
+    pub(crate) fn get_percentiles(results: &BTreeMap<i32, i32>, total: u32) -> Percentiles {
+        let mut steps = Vec::new();
+        steps.push(total * 95 / 100);
+        steps.push(total * 85 / 100);
+        steps.push(total * 75 / 100);
+        steps.push(total * 50 / 100);
+        steps.push(total * 25 / 100);
+        steps.push(total * 15 / 100);
+        steps.push(total * 5 / 100);
+
+        let mut count: u32 = 0;
+        let mut test_val_opt = steps.pop();
+        let mut pcts = Vec::new();
+        for k_v in results.iter() {
+            if test_val_opt.is_none() {
+                break;
+            }
+
+            count += *k_v.1 as u32;
+            while !test_val_opt.is_none() && Some(count) >= test_val_opt {
+                pcts.push(k_v.0);
+                test_val_opt = steps.pop();
+            }
+        }
+
+        Percentiles {
+            _5th: *pcts[0],
+            _15th: *pcts[1],
+            _25th: *pcts[2],
+            _50th: *pcts[3],
+            _75th: *pcts[4],
+            _85th: *pcts[5],
+            _95th: *pcts[6],
+        }
     }
 
     fn output_results<T: std::fmt::Debug>(results: T) {
