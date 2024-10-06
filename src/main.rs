@@ -1,5 +1,6 @@
 use core::cell::RefCell;
 use std::{
+    collections::HashMap,
     error::Error,
     fs::{self, OpenOptions},
     io::Write,
@@ -7,14 +8,58 @@ use std::{
 };
 
 use chrono::Utc;
+use rand::Rng;
 
 mod tests;
 
 thread_local! {static LOG_FILE_PATH:RefCell<Option<PathBuf>> = RefCell::new(None::<PathBuf>)}
 
-fn main() {}
+fn main() {
+    let symbol = "AACG";
+    let path = PathBuf::from(symbol);
+    let periods = 10;
+    let number_of_simulations = 1_000_000;
 
-fn perform_simulation_calculation(rates: &Vec<f64>) -> f64 {
+    let data_result = get_simulation_data(&path);
+    match data_result {
+        Ok(data) => {
+            monte_carlo_simulation(&data, periods, number_of_simulations);
+        }
+        Err(e) => log(symbol, e),
+    }
+}
+fn monte_carlo_simulation(data: &Vec<f64>, periods: u32, number_of_simulations: u32) {
+    let mut results = HashMap::new();
+
+    for _ in 1..number_of_simulations {
+        let simulation = simulate_period(&data, periods);
+        let calc = perform_simulation_calculation(&simulation);
+
+        *results.entry(calc).or_insert(0) += 1;
+    }
+
+    output_results(results);
+}
+
+fn output_results<T: std::fmt::Debug>(results: T) {
+    println!("results: {:?}", results);
+}
+
+fn simulate_period(input: &Vec<f64>, number_of_periods: u32) -> Vec<f64> {
+    let mut ret = Vec::new();
+    let mut rng = rand::thread_rng();
+    let count = input.len();
+    if count == 0 {
+        return ret;
+    }
+    for _index in 0..number_of_periods {
+        let rnd_index = rng.gen_range(0..count);
+        ret.push(input[rnd_index]);
+    }
+    ret
+}
+
+fn perform_simulation_calculation(rates: &Vec<f64>) -> i32 {
     let base_investment = 100.0;
     let mut investment = base_investment;
 
@@ -22,7 +67,7 @@ fn perform_simulation_calculation(rates: &Vec<f64>) -> f64 {
         investment += investment * rate;
     }
 
-    investment - base_investment
+    (investment - base_investment).round() as i32
 }
 
 /// Method to get the simulation data from the comman separated file passed in to the method
@@ -34,7 +79,6 @@ fn get_simulation_data(path: &PathBuf) -> Result<Vec<f64>, Box<dyn Error>> {
     let items = content.split(',');
 
     for item in items {
-        println!("{}", item);
         let val = item.parse::<f64>()?;
         ret.push(val);
     }
