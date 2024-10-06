@@ -2,7 +2,8 @@
 mod tests {
     use std::path::PathBuf;
 
-    use crate::{get_simulation_data, perform_simulation_calculation, simulate_period};
+    use crate::get_simulation_data;
+    use crate::monte_carlo::simulations::{perform_simulation_calculation, simulate_period};
 
     fn vectors_are_equal(v1: Vec<f64>, v2: Vec<f64>) -> bool {
         if v1.iter().count() != v2.iter().count() {
