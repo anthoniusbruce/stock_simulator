@@ -84,25 +84,27 @@ fn get_next_file(dir: &PathBuf) -> Option<Result<DirEntry, Box<dyn Error>>> {
     match contents_result {
         Err(e) => return Some(Err(Box::new(e))),
         Ok(mut contents) => {
-            let first_opt = contents.next();
-            if first_opt.is_none() {
-                return None;
-            }
+            let mut first_opt = contents.next();
+            let mut first: DirEntry;
+            loop {
+                if first_opt.is_none() {
+                    return None;
+                }
 
-            let first_result = first_opt.unwrap();
-            match first_result {
-                Err(e) => return Some(Err(Box::new(e))),
-                Ok(first) => {
-                    if !first.path().is_file() {
-                        return Some(Err(Box::new(SimulationError {
-                            kind: ErrorKind::NotFound,
-                            message: format!("{:?} is not a file", first.path()),
-                        })));
-                    }
+                let first_result = first_opt.unwrap();
+                match first_result {
+                    Err(e) => return Some(Err(Box::new(e))),
+                    Ok(f) => first = f,
+                }
 
-                    Some(Ok(first))
+                if first.path().is_dir() {
+                    first_opt = contents.next();
+                    continue;
+                } else {
+                    break;
                 }
             }
+            Some(Ok(first))
         }
     }
 }
