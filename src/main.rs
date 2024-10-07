@@ -2,7 +2,7 @@ use core::{cell::RefCell, fmt};
 use std::{
     error::Error,
     fs::{self, DirEntry, OpenOptions},
-    io::{ErrorKind, Write},
+    io::{self, ErrorKind, Write},
     path::PathBuf,
 };
 
@@ -30,7 +30,6 @@ impl fmt::Display for SimulationError {
 }
 
 fn main() {
-    let symbol = "AACG";
     let dir = PathBuf::from("test_data");
     let periods = 10;
     let number_of_simulations = 750_000;
@@ -44,7 +43,7 @@ fn main() {
         return;
     }
     let symbol_file_result = symbol_file_opt.unwrap();
-    let symbol_file: DirEntry;
+    let symbol_file: PathBuf;
     match symbol_file_result {
         Err(e) => {
             log("N/A", e);
@@ -52,10 +51,11 @@ fn main() {
         }
         Ok(sym) => symbol_file = sym,
     }
+    let symbol = symbol_file.file_name().unwrap().to_str().unwrap();
 
     // run the simulation
     log(&symbol, "simulation begin");
-    let data_result = get_simulation_data(&symbol_file.path());
+    let data_result = get_simulation_data(&symbol_file);
     match data_result {
         Ok(data) => {
             log(
@@ -72,7 +72,7 @@ fn main() {
     log(&symbol, "simulation end");
 }
 
-fn get_next_file(dir: &PathBuf) -> Option<Result<DirEntry, Box<dyn Error>>> {
+fn get_next_file(dir: &PathBuf) -> Option<Result<PathBuf, Box<dyn Error>>> {
     if !dir.is_dir() {
         return Some(Err(Box::new(SimulationError {
             kind: ErrorKind::NotFound,
@@ -104,9 +104,23 @@ fn get_next_file(dir: &PathBuf) -> Option<Result<DirEntry, Box<dyn Error>>> {
                     break;
                 }
             }
-            Some(Ok(first))
+
+            let file_to_process_result = move_file_to_archive(first);
+            match file_to_process_result {
+                Err(e) => return Some(Err(Box::new(e))),
+                Ok(file_to_process) => return Some(Ok(file_to_process)),
+            }
         }
     }
+}
+
+fn move_file_to_archive(f: DirEntry) -> Result<PathBuf, io::Error> {
+    let mut archive = PathBuf::from(f.path().parent().unwrap());
+    archive.push("archive");
+    fs::create_dir_all(archive.as_path())?;
+    archive.push(f.file_name());
+    fs::rename(f.path(), archive.as_path())?;
+    Ok(archive)
 }
 
 /// Method to get the simulation data from the comman separated file passed in to the method
