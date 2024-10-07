@@ -37,39 +37,48 @@ fn main() {
     LOG_FILE_PATH.with(|path| *path.borrow_mut() = Some(PathBuf::from("logs/stock_simulator.log")));
 
     // get the path to the next file to be processed
-    let symbol_file_opt = get_next_file(&dir);
-    if symbol_file_opt.is_none() {
-        log("N/A", "no files to process");
-        return;
-    }
-    let symbol_file_result = symbol_file_opt.unwrap();
-    let symbol_file: PathBuf;
-    match symbol_file_result {
-        Err(e) => {
-            log("N/A", e);
-            return;
-        }
-        Ok(sym) => symbol_file = sym,
-    }
-    let symbol = symbol_file.file_name().unwrap().to_str().unwrap();
+    let mut symbol_file_opt = get_next_file(&dir);
 
-    // run the simulation
-    log(&symbol, "simulation begin");
-    let data_result = get_simulation_data(&symbol_file);
-    match data_result {
-        Ok(data) => {
-            log(
-                &symbol,
-                format!(
-                    "{} items, {periods} periods, {number_of_simulations} simulations",
-                    &data.len()
-                ),
-            );
-            simulations::monte_carlo_simulation(&data, periods, number_of_simulations);
+    let mut symbol_count = 0;
+    while !symbol_file_opt.is_none() {
+        let symbol_file_result = symbol_file_opt.unwrap();
+        let symbol_file: PathBuf;
+        match symbol_file_result {
+            Err(e) => {
+                log("N/A", e);
+                symbol_file_opt = get_next_file(&dir);
+
+                continue;
+            }
+            Ok(sym) => symbol_file = sym,
         }
-        Err(e) => log(symbol, e),
+        let symbol = symbol_file.file_name().unwrap().to_str().unwrap();
+
+        // run the simulation
+        log(&symbol, "simulation begin");
+        let data_result = get_simulation_data(&symbol_file);
+        match data_result {
+            Ok(data) => {
+                log(
+                    &symbol,
+                    format!(
+                        "{} items, {periods} periods, {number_of_simulations} simulations",
+                        &data.len()
+                    ),
+                );
+                simulations::monte_carlo_simulation(&data, periods, number_of_simulations);
+            }
+            Err(e) => log(symbol, e),
+        }
+        log(&symbol, "simulation end");
+
+        symbol_count += 1;
+        if symbol_count > 10000 {
+            break;
+        };
+        symbol_file_opt = get_next_file(&dir);
     }
-    log(&symbol, "simulation end");
+    log("N/A", format!("processed {symbol_count} symbols"));
 }
 
 fn get_next_file(dir: &PathBuf) -> Option<Result<PathBuf, Box<dyn Error>>> {
