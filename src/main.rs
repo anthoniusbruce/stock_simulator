@@ -16,9 +16,10 @@ thread_local! {static LOG_FILE_PATH:RefCell<Option<PathBuf>> = RefCell::new(None
 
 fn main() {
     let symbol = "AACG";
-    let path = PathBuf::from(symbol);
+    let mut path = PathBuf::from("test_data");
+    path.push(symbol);
     let periods = 10;
-    let number_of_simulations = 1_000_000;
+    let number_of_simulations = 750_000;
 
     LOG_FILE_PATH.with(|path| *path.borrow_mut() = Some(PathBuf::from("logs/stock_simulator.log")));
 

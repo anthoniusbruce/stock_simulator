@@ -1,7 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use core::num;
-    use std::collections::{btree_map, BTreeMap};
+    use std::collections::BTreeMap;
     use std::path::PathBuf;
 
     use crate::get_simulation_data;
@@ -47,6 +46,19 @@ mod tests {
     }
 
     #[test]
+    fn get_percentiles_empty_results_zeroes_in_percentiles() {
+        // assign
+        let results = BTreeMap::new();
+        let number_of_results = results.len() as u32;
+
+        // act
+        let actual_opt = get_percentiles(&results, number_of_results);
+
+        // assert
+        assert!(actual_opt.is_none());
+    }
+
+    #[test]
     fn get_percentiles_less_than_100_in_result() {
         // assign
         let number_of_results = 20;
@@ -83,9 +95,10 @@ mod tests {
         };
 
         // act
-        let actual = get_percentiles(&results, number_of_results);
+        let actual_opt = get_percentiles(&results, number_of_results);
 
         // assert
+        let actual = actual_opt.unwrap();
         assert_eq!(actual._5th, expected._5th);
         assert_eq!(actual._15th, expected._15th);
         assert_eq!(actual._25th, expected._25th);
@@ -111,9 +124,10 @@ mod tests {
         };
 
         // act
-        let actual = get_percentiles(&results, number_of_results);
+        let actual_opt = get_percentiles(&results, number_of_results);
 
         // assert
+        let actual = actual_opt.unwrap();
         assert_eq!(actual._5th, expected._5th);
         assert_eq!(actual._15th, expected._15th);
         assert_eq!(actual._25th, expected._25th);
@@ -202,9 +216,10 @@ mod tests {
         };
 
         // act
-        let actual = get_percentiles(&results, number_of_results);
+        let actual_opt = get_percentiles(&results, number_of_results);
 
         // assert
+        let actual = actual_opt.unwrap();
         assert_eq!(actual._5th, expected._5th);
         assert_eq!(actual._15th, expected._15th);
         assert_eq!(actual._25th, expected._25th);
@@ -331,7 +346,7 @@ mod tests {
     #[test]
     fn get_simulation_data_happy_path() {
         // assign
-        let file_name = PathBuf::from("AACG");
+        let file_name = PathBuf::from("test_data/AACG");
         let expected = vec![
             0.03448282949422888,
             -0.01666674945089223,

@@ -31,7 +31,11 @@ pub mod simulations {
         output_results(results);
     }
 
-    pub(crate) fn get_percentiles(results: &BTreeMap<i32, i32>, total: u32) -> Percentiles {
+    pub(crate) fn get_percentiles(results: &BTreeMap<i32, i32>, total: u32) -> Option<Percentiles> {
+        if results.len() == 0 {
+            return None;
+        }
+
         let mut steps = Vec::new();
         steps.push(total * 95 / 100);
         steps.push(total * 85 / 100);
@@ -56,7 +60,7 @@ pub mod simulations {
             }
         }
 
-        Percentiles {
+        Some(Percentiles {
             _5th: *pcts[0],
             _15th: *pcts[1],
             _25th: *pcts[2],
@@ -64,7 +68,7 @@ pub mod simulations {
             _75th: *pcts[4],
             _85th: *pcts[5],
             _95th: *pcts[6],
-        }
+        })
     }
 
     fn output_results<T: std::fmt::Debug>(results: T) {
