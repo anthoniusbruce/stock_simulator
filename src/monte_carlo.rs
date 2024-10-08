@@ -4,13 +4,9 @@ pub mod simulations {
     use rand::Rng;
 
     pub struct Percentiles {
-        pub _5th: i32,
-        pub _15th: i32,
         pub _25th: i32,
         pub _50th: i32,
         pub _75th: i32,
-        pub _85th: i32,
-        pub _95th: i32,
     }
 
     /// Method that will run a number of monte carlo simulations on the data passed in for the number of periods pass in
@@ -37,13 +33,9 @@ pub mod simulations {
         }
 
         let mut steps = Vec::new();
-        steps.push(total * 95 / 100);
-        steps.push(total * 85 / 100);
         steps.push(total * 75 / 100);
         steps.push(total * 50 / 100);
         steps.push(total * 25 / 100);
-        steps.push(total * 15 / 100);
-        steps.push(total * 5 / 100);
 
         let mut count: u32 = 0;
         let mut test_val_opt = steps.pop();
@@ -61,13 +53,9 @@ pub mod simulations {
         }
 
         Some(Percentiles {
-            _5th: *pcts[0],
-            _15th: *pcts[1],
-            _25th: *pcts[2],
-            _50th: *pcts[3],
-            _75th: *pcts[4],
-            _85th: *pcts[5],
-            _95th: *pcts[6],
+            _25th: *pcts[0],
+            _50th: *pcts[1],
+            _75th: *pcts[2],
         })
     }
 

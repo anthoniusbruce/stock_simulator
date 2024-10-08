@@ -85,13 +85,9 @@ mod tests {
             (20, 1),
         ]);
         let expected = Percentiles {
-            _5th: 1,
-            _15th: 3,
             _25th: 5,
             _50th: 10,
             _75th: 15,
-            _85th: 17,
-            _95th: 19,
         };
 
         // act
@@ -99,13 +95,9 @@ mod tests {
 
         // assert
         let actual = actual_opt.unwrap();
-        assert_eq!(actual._5th, expected._5th);
-        assert_eq!(actual._15th, expected._15th);
         assert_eq!(actual._25th, expected._25th);
         assert_eq!(actual._50th, expected._50th);
         assert_eq!(actual._75th, expected._75th);
-        assert_eq!(actual._85th, expected._85th);
-        assert_eq!(actual._95th, expected._95th);
     }
 
     #[test]
@@ -114,13 +106,9 @@ mod tests {
         let number_of_results = 1;
         let results = BTreeMap::from([(2, 1)]);
         let expected = Percentiles {
-            _5th: 2,
-            _15th: 2,
             _25th: 2,
             _50th: 2,
             _75th: 2,
-            _85th: 2,
-            _95th: 2,
         };
 
         // act
@@ -128,13 +116,9 @@ mod tests {
 
         // assert
         let actual = actual_opt.unwrap();
-        assert_eq!(actual._5th, expected._5th);
-        assert_eq!(actual._15th, expected._15th);
         assert_eq!(actual._25th, expected._25th);
         assert_eq!(actual._50th, expected._50th);
         assert_eq!(actual._75th, expected._75th);
-        assert_eq!(actual._85th, expected._85th);
-        assert_eq!(actual._95th, expected._95th);
     }
 
     #[test]
@@ -206,13 +190,9 @@ mod tests {
             (94, 1),
         ]);
         let expected = Percentiles {
-            _5th: -29,
-            _15th: -20,
             _25th: -13,
             _50th: 5,
             _75th: 25,
-            _85th: 40,
-            _95th: 61,
         };
 
         // act
@@ -220,13 +200,9 @@ mod tests {
 
         // assert
         let actual = actual_opt.unwrap();
-        assert_eq!(actual._5th, expected._5th);
-        assert_eq!(actual._15th, expected._15th);
         assert_eq!(actual._25th, expected._25th);
         assert_eq!(actual._50th, expected._50th);
         assert_eq!(actual._75th, expected._75th);
-        assert_eq!(actual._85th, expected._85th);
-        assert_eq!(actual._95th, expected._95th);
     }
 
     #[test]
