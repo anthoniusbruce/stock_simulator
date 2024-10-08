@@ -3,10 +3,10 @@ mod tests {
     use std::collections::BTreeMap;
     use std::path::PathBuf;
 
-    use crate::get_simulation_data;
     use crate::monte_carlo::simulations::{
         get_percentiles, perform_simulation_calculation, simulate_period, Percentiles,
     };
+    use crate::stock_simulation::stock_simulator::get_simulation_data;
 
     fn vectors_are_equal(v1: Vec<f64>, v2: Vec<f64>) -> bool {
         if v1.iter().count() != v2.iter().count() {
