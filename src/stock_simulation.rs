@@ -7,7 +7,11 @@ pub mod stock_simulator {
         path::PathBuf,
     };
 
-    use crate::{monte_carlo::simulations, utilities::util::log, LOG_FILE_PATH};
+    use crate::{
+        monte_carlo::simulations::{self, Prediction},
+        utilities::util::log,
+        LOG_FILE_PATH,
+    };
 
     #[derive(Debug)]
     pub struct SimulationError {
@@ -58,7 +62,16 @@ pub mod stock_simulator {
                             &data.len()
                         ),
                     );
-                    simulations::monte_carlo_simulation(&data, periods, number_of_simulations);
+                    let results = simulations::monte_carlo_simulation(
+                        symbol.to_string(),
+                        &data,
+                        periods,
+                        number_of_simulations,
+                    );
+
+                    if results.is_some() {
+                        output_results(results.unwrap());
+                    }
                 }
                 Err(e) => log(symbol, e),
             }
@@ -68,6 +81,12 @@ pub mod stock_simulator {
             symbol_file_opt = get_next_file(&dir);
         }
         log("N/A", format!("processed {symbol_count} symbols"));
+    }
+
+    fn output_results(prediction: Prediction) {
+        // convert prediction to json
+        // save json to converted file or database or something.
+        println!("{:?}", prediction);
     }
 
     fn get_next_file(dir: &PathBuf) -> Option<Result<PathBuf, Box<dyn Error>>> {
