@@ -14,9 +14,9 @@ pub mod simulations {
 
     #[derive(Debug)]
     pub struct Prediction {
-        symbol: String,
-        percentiles: Percentiles,
-        data: BTreeMap<i32, u32>,
+        pub symbol: String,
+        pub percentiles: Percentiles,
+        pub data: BTreeMap<i32, u32>,
     }
 
     /// Method that will run a number of monte carlo simulations on the data passed in for the number of periods pass in

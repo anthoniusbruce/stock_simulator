@@ -36,6 +36,7 @@ pub mod stock_simulator {
         let mut symbol_file_opt = get_next_file(&dir);
 
         let mut symbol_count = 0;
+        let mut all_symbols = Vec::new();
         while !symbol_file_opt.is_none() {
             let symbol_file_result = symbol_file_opt.unwrap();
             let symbol_file: PathBuf;
@@ -70,7 +71,8 @@ pub mod stock_simulator {
                     );
 
                     if results.is_some() {
-                        output_results(results.unwrap());
+                        let sim = results.unwrap();
+                        all_symbols.push(sim);
                     }
                 }
                 Err(e) => log(symbol, e),
@@ -80,13 +82,42 @@ pub mod stock_simulator {
             symbol_count += 1;
             symbol_file_opt = get_next_file(&dir);
         }
+
+        for prediction in all_symbols {
+            output_results(&prediction);
+        }
+
         log("N/A", format!("processed {symbol_count} symbols"));
     }
 
-    fn output_results(prediction: Prediction) {
+    fn output_results(prediction: &Prediction) {
         // convert prediction to json
         // save json to converted file or database or something.
         println!("{:?}", prediction);
+    }
+
+    pub(crate) fn get_x_high_most_common_result(
+        top_x: usize,
+        all: &Vec<Prediction>,
+    ) -> Vec<(&str, i32)> {
+        let mut results: Vec<(&str, i32)> = Vec::new();
+
+        for prediction in all {
+            let mut index = 0;
+            while index < results.len() && results[index].1 > prediction.percentiles._50th {
+                index += 1;
+            }
+
+            if index == results.len() {
+                results.push((&prediction.symbol, prediction.percentiles._50th));
+            } else {
+                results.insert(index, (&prediction.symbol, prediction.percentiles._50th));
+            }
+
+            results.truncate(top_x);
+        }
+
+        results
     }
 
     fn get_next_file(dir: &PathBuf) -> Option<Result<PathBuf, Box<dyn Error>>> {
