@@ -1,16 +1,18 @@
 #[cfg(test)]
 mod tests {
     use std::collections::BTreeMap;
+    use std::fmt::Debug;
     use std::path::PathBuf;
 
     use crate::monte_carlo::simulations::{
         get_percentiles, perform_simulation_calculation, simulate_period, Percentiles, Prediction,
     };
     use crate::stock_simulation::stock_simulator::{
-        get_simulation_data, get_x_high_most_common_result,
+        get_highest_x, get_simulation_data, HighestLow, MostCommonResult, TopPredictions,
+        TotalSpan, WeightedSpan,
     };
 
-    fn vectors_are_equal<T: PartialEq + std::fmt::Debug>(v1: Vec<T>, v2: Vec<T>) -> bool {
+    fn vectors_are_equal<T: PartialEq + Debug>(v1: Vec<T>, v2: Vec<T>) -> bool {
         if v1.iter().count() != v2.iter().count() {
             println!(
                 "counts are not equal v1={} v2 = {}",
@@ -37,9 +39,10 @@ mod tests {
         return true;
     }
 
-    fn vector_is_subset<T: PartialEq>(subset: Vec<T>, original: Vec<T>) -> bool {
+    fn vector_is_subset<T: PartialEq + Debug>(subset: Vec<T>, original: Vec<T>) -> bool {
         for item in subset.iter() {
             if !original.contains(item) {
+                println!("item {:?} not found", item);
                 return false;
             }
         }
@@ -298,132 +301,68 @@ mod tests {
             },
         ];
         let top_x = 5;
+        let primary = Box::new(MostCommonResult {});
+        let secondary = Box::new(HighestLow {});
+        let tertiary = Box::new(TotalSpan {});
+        let quarternary = Box::new(WeightedSpan {});
         let expected = vec![
-            ("AACG", 9),
-            ("AAON", 5),
-            ("AADI", 4),
-            ("AAOI", 3),
-            ("AAPB", 2),
-            ("AAPL", 2),
+            TopPredictions {
+                symbol: "AACG".to_string(),
+                primary: 9,
+                secondary: -6,
+                tertiary: 33,
+                quarternary: 3,
+            },
+            TopPredictions {
+                symbol: "AAON".to_string(),
+                primary: 5,
+                secondary: 2,
+                tertiary: 7,
+                quarternary: 1,
+            },
+            TopPredictions {
+                symbol: "AADI".to_string(),
+                primary: 4,
+                secondary: -2,
+                tertiary: 13,
+                quarternary: 1,
+            },
+            TopPredictions {
+                symbol: "AAOI".to_string(),
+                primary: 3,
+                secondary: -9,
+                tertiary: 26,
+                quarternary: 2,
+            },
+            TopPredictions {
+                symbol: "AAPB".to_string(),
+                primary: 2,
+                secondary: -2,
+                tertiary: 7,
+                quarternary: -1,
+            },
+            TopPredictions {
+                symbol: "AAPL".to_string(),
+                primary: 2,
+                secondary: -1,
+                tertiary: 3,
+                quarternary: -3,
+            },
         ];
 
         // act
-        let actual = get_x_high_most_common_result(top_x, &predictions);
+        let actual = get_highest_x(
+            top_x,
+            &predictions,
+            primary,
+            secondary,
+            tertiary,
+            quarternary,
+        );
 
         // assert
         assert_eq!(actual.len(), 5);
         assert!(vector_is_subset(actual, expected));
-    }
-
-    #[test]
-    fn get_x_high_most_common_result_top_5_of_10_two_of_same_result() {
-        // assign
-        let predictions = vec![
-            Prediction {
-                symbol: "AAPB".to_string(),
-                percentiles: Percentiles {
-                    _25th: -2,
-                    _50th: 2,
-                    _75th: 5,
-                },
-                data: BTreeMap::new(),
-            },
-            Prediction {
-                symbol: "AAPL".to_string(),
-                percentiles: Percentiles {
-                    _25th: -1,
-                    _50th: 1,
-                    _75th: 2,
-                },
-                data: BTreeMap::new(),
-            },
-            Prediction {
-                symbol: "AAL".to_string(),
-                percentiles: Percentiles {
-                    _25th: -7,
-                    _50th: -3,
-                    _75th: 1,
-                },
-                data: BTreeMap::new(),
-            },
-            Prediction {
-                symbol: "AAPD".to_string(),
-                percentiles: Percentiles {
-                    _25th: -2,
-                    _50th: -1,
-                    _75th: 1,
-                },
-                data: BTreeMap::new(),
-            },
-            Prediction {
-                symbol: "AADI".to_string(),
-                percentiles: Percentiles {
-                    _25th: -2,
-                    _50th: 4,
-                    _75th: 11,
-                },
-                data: BTreeMap::new(),
-            },
-            Prediction {
-                symbol: "AADR".to_string(),
-                percentiles: Percentiles {
-                    _25th: -2,
-                    _50th: -1,
-                    _75th: 0,
-                },
-                data: BTreeMap::new(),
-            },
-            Prediction {
-                symbol: "AACG".to_string(),
-                percentiles: Percentiles {
-                    _25th: -6,
-                    _50th: 9,
-                    _75th: 27,
-                },
-                data: BTreeMap::new(),
-            },
-            Prediction {
-                symbol: "AAME".to_string(),
-                percentiles: Percentiles {
-                    _25th: -14,
-                    _50th: -6,
-                    _75th: 3,
-                },
-                data: BTreeMap::new(),
-            },
-            Prediction {
-                symbol: "AAON".to_string(),
-                percentiles: Percentiles {
-                    _25th: 2,
-                    _50th: 5,
-                    _75th: 9,
-                },
-                data: BTreeMap::new(),
-            },
-            Prediction {
-                symbol: "AAOI".to_string(),
-                percentiles: Percentiles {
-                    _25th: -9,
-                    _50th: 4,
-                    _75th: 17,
-                },
-                data: BTreeMap::new(),
-            },
-        ];
-        let top_x = 5;
-        let expected = vec![
-            ("AACG", 9),
-            ("AAON", 5),
-            ("AADI", 4),
-            ("AAOI", 4),
-            ("AAPB", 2),
-        ];
-
-        // act
-        let actual = get_x_high_most_common_result(top_x, &predictions);
-
-        // assert
-        assert!(vectors_are_equal(expected, actual));
     }
 
     #[test]
@@ -453,16 +392,16 @@ mod tests {
                 percentiles: Percentiles {
                     _25th: -7,
                     _50th: 2,
-                    _75th: 1,
+                    _75th: 3,
                 },
                 data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAPD".to_string(),
                 percentiles: Percentiles {
-                    _25th: -2,
+                    _25th: 2,
                     _50th: 2,
-                    _75th: 1,
+                    _75th: 2,
                 },
                 data: BTreeMap::new(),
             },
@@ -480,7 +419,7 @@ mod tests {
                 percentiles: Percentiles {
                     _25th: -2,
                     _50th: 2,
-                    _75th: 0,
+                    _75th: 2,
                 },
                 data: BTreeMap::new(),
             },
@@ -522,21 +461,92 @@ mod tests {
             },
         ];
         let top_x = 5;
+        let primary = Box::new(MostCommonResult {});
+        let secondary = Box::new(HighestLow {});
+        let tertiary = Box::new(TotalSpan {});
+        let quarternary = Box::new(WeightedSpan {});
         let expected = vec![
-            ("AACG", 2),
-            ("AAON", 2),
-            ("AADI", 2),
-            ("AAOI", 2),
-            ("AAPB", 2),
-            ("AAPL", 2),
-            ("AAPD", 2),
-            ("AADR", 2),
-            ("AAL", 2),
-            ("AAME", 2),
+            TopPredictions {
+                symbol: "AACG".to_string(),
+                primary: 2,
+                secondary: -6,
+                tertiary: 33,
+                quarternary: 17,
+            },
+            TopPredictions {
+                symbol: "AAON".to_string(),
+                primary: 2,
+                secondary: 2,
+                tertiary: 7,
+                quarternary: 7,
+            },
+            TopPredictions {
+                symbol: "AADI".to_string(),
+                primary: 2,
+                secondary: -2,
+                tertiary: 13,
+                quarternary: 5,
+            },
+            TopPredictions {
+                symbol: "AAOI".to_string(),
+                primary: 2,
+                secondary: -9,
+                tertiary: 26,
+                quarternary: 4,
+            },
+            TopPredictions {
+                symbol: "AAPB".to_string(),
+                primary: 2,
+                secondary: -2,
+                tertiary: 7,
+                quarternary: -1,
+            },
+            TopPredictions {
+                symbol: "AAPL".to_string(),
+                primary: 2,
+                secondary: -1,
+                tertiary: 3,
+                quarternary: -3,
+            },
+            TopPredictions {
+                symbol: "AAPD".to_string(),
+                primary: 2,
+                secondary: 2,
+                tertiary: 0,
+                quarternary: 0,
+            },
+            TopPredictions {
+                symbol: "AADR".to_string(),
+                primary: 2,
+                secondary: -2,
+                tertiary: 4,
+                quarternary: -4,
+            },
+            TopPredictions {
+                symbol: "AAL".to_string(),
+                primary: 2,
+                secondary: -7,
+                tertiary: 10,
+                quarternary: -4,
+            },
+            TopPredictions {
+                symbol: "AAME".to_string(),
+                primary: 2,
+                secondary: -14,
+                tertiary: 17,
+                quarternary: -15,
+            },
         ];
 
         // act
-        let actual = get_x_high_most_common_result(top_x, &predictions);
+        let actual = get_highest_x(
+            top_x,
+            &predictions,
+            primary,
+            secondary,
+            tertiary,
+            quarternary,
+        );
 
         // assert
         assert_eq!(actual.len(), 5);
@@ -639,28 +649,99 @@ mod tests {
             },
         ];
         let top_x = 11;
+        let primary = Box::new(MostCommonResult {});
+        let secondary = Box::new(HighestLow {});
+        let tertiary = Box::new(TotalSpan {});
+        let quarternary = Box::new(WeightedSpan {});
         let expected = vec![
-            ("AACG", 9),
-            ("AAON", 5),
-            ("AADI", 4),
-            ("AAOI", 3),
-            ("AAPB", 2),
-            ("AAPL", 1),
-            ("AAPD", -1),
-            ("AADR", -1),
-            ("AAL", -3),
-            ("AAME", -6),
+            TopPredictions {
+                symbol: "AACG".to_string(),
+                primary: 9,
+                secondary: -6,
+                tertiary: 33,
+                quarternary: 3,
+            },
+            TopPredictions {
+                symbol: "AAON".to_string(),
+                primary: 5,
+                secondary: 2,
+                tertiary: 7,
+                quarternary: 1,
+            },
+            TopPredictions {
+                symbol: "AADI".to_string(),
+                primary: 4,
+                secondary: -2,
+                tertiary: 13,
+                quarternary: 1,
+            },
+            TopPredictions {
+                symbol: "AAOI".to_string(),
+                primary: 3,
+                secondary: -9,
+                tertiary: 26,
+                quarternary: 2,
+            },
+            TopPredictions {
+                symbol: "AAPB".to_string(),
+                primary: 2,
+                secondary: -2,
+                tertiary: 7,
+                quarternary: -1,
+            },
+            TopPredictions {
+                symbol: "AAPL".to_string(),
+                primary: 1,
+                secondary: -1,
+                tertiary: 3,
+                quarternary: -1,
+            },
+            TopPredictions {
+                symbol: "AAPD".to_string(),
+                primary: -1,
+                secondary: -2,
+                tertiary: 3,
+                quarternary: 1,
+            },
+            TopPredictions {
+                symbol: "AADR".to_string(),
+                primary: -1,
+                secondary: -2,
+                tertiary: 2,
+                quarternary: 0,
+            },
+            TopPredictions {
+                symbol: "AAL".to_string(),
+                primary: -3,
+                secondary: -7,
+                tertiary: 8,
+                quarternary: 0,
+            },
+            TopPredictions {
+                symbol: "AAME".to_string(),
+                primary: -6,
+                secondary: -14,
+                tertiary: 17,
+                quarternary: 1,
+            },
         ];
 
         // act
-        let actual = get_x_high_most_common_result(top_x, &predictions);
+        let actual = get_highest_x(
+            top_x,
+            &predictions,
+            primary,
+            secondary,
+            tertiary,
+            quarternary,
+        );
 
         // assert
         assert!(vectors_are_equal(expected, actual));
     }
 
     #[test]
-    fn get_x_high_most_common_result_top_5_of_10() {
+    fn get_x_high_most_common_result_top_5_of_10_primary_weighted_span() {
         // assign
         let predictions = vec![
             Prediction {
@@ -755,16 +836,529 @@ mod tests {
             },
         ];
         let top_x = 5;
+        let primary = Box::new(WeightedSpan {});
+        let secondary = Box::new(MostCommonResult {});
+        let tertiary = Box::new(HighestLow {});
+        let quarternary = Box::new(TotalSpan {});
         let expected = vec![
-            ("AACG", 9),
-            ("AAON", 5),
-            ("AADI", 4),
-            ("AAOI", 3),
-            ("AAPB", 2),
+            TopPredictions {
+                symbol: String::from("AACG"),
+                primary: 3,
+                secondary: 9,
+                tertiary: -6,
+                quarternary: 33,
+            },
+            TopPredictions {
+                symbol: String::from("AAOI"),
+                primary: 2,
+                secondary: 3,
+                tertiary: -9,
+                quarternary: 26,
+            },
+            TopPredictions {
+                symbol: String::from("AAON"),
+                primary: 1,
+                secondary: 5,
+                tertiary: 2,
+                quarternary: 7,
+            },
+            TopPredictions {
+                symbol: String::from("AAME"),
+                primary: 1,
+                secondary: -6,
+                tertiary: -14,
+                quarternary: 17,
+            },
+            TopPredictions {
+                symbol: String::from("AADI"),
+                primary: 1,
+                secondary: 4,
+                tertiary: -2,
+                quarternary: 13,
+            },
+            TopPredictions {
+                symbol: String::from("AAPD"),
+                primary: 1,
+                secondary: -1,
+                tertiary: -2,
+                quarternary: 3,
+            },
         ];
 
         // act
-        let actual = get_x_high_most_common_result(top_x, &predictions);
+        let actual = get_highest_x(
+            top_x,
+            &predictions,
+            primary,
+            secondary,
+            tertiary,
+            quarternary,
+        );
+
+        // assert
+        assert_eq!(actual.len(), 5);
+        assert!(vector_is_subset(actual, expected));
+    }
+
+    #[test]
+    fn get_x_high_most_common_result_top_5_of_10_primary_total_span() {
+        // assign
+        let predictions = vec![
+            Prediction {
+                symbol: "AAPB".to_string(),
+                percentiles: Percentiles {
+                    _25th: -2,
+                    _50th: 2,
+                    _75th: 5,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAPL".to_string(),
+                percentiles: Percentiles {
+                    _25th: -1,
+                    _50th: 1,
+                    _75th: 2,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAL".to_string(),
+                percentiles: Percentiles {
+                    _25th: -7,
+                    _50th: -3,
+                    _75th: 1,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAPD".to_string(),
+                percentiles: Percentiles {
+                    _25th: -2,
+                    _50th: -1,
+                    _75th: 1,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AADI".to_string(),
+                percentiles: Percentiles {
+                    _25th: -2,
+                    _50th: 4,
+                    _75th: 11,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AADR".to_string(),
+                percentiles: Percentiles {
+                    _25th: -2,
+                    _50th: -1,
+                    _75th: 0,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AACG".to_string(),
+                percentiles: Percentiles {
+                    _25th: -6,
+                    _50th: 9,
+                    _75th: 27,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAME".to_string(),
+                percentiles: Percentiles {
+                    _25th: -14,
+                    _50th: -6,
+                    _75th: 3,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAON".to_string(),
+                percentiles: Percentiles {
+                    _25th: 2,
+                    _50th: 5,
+                    _75th: 9,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAOI".to_string(),
+                percentiles: Percentiles {
+                    _25th: -9,
+                    _50th: 3,
+                    _75th: 17,
+                },
+                data: BTreeMap::new(),
+            },
+        ];
+        let top_x = 5;
+        let primary = Box::new(TotalSpan {});
+        let secondary = Box::new(MostCommonResult {});
+        let tertiary = Box::new(HighestLow {});
+        let quarternary = Box::new(WeightedSpan {});
+        let expected = vec![
+            TopPredictions {
+                symbol: String::from("AADR"),
+                primary: 2,
+                secondary: -1,
+                tertiary: -2,
+                quarternary: 0,
+            },
+            TopPredictions {
+                symbol: String::from("AAPL"),
+                primary: 3,
+                secondary: 1,
+                tertiary: -1,
+                quarternary: -1,
+            },
+            TopPredictions {
+                symbol: String::from("AAPD"),
+                primary: 3,
+                secondary: -1,
+                tertiary: -2,
+                quarternary: 1,
+            },
+            TopPredictions {
+                symbol: String::from("AAON"),
+                primary: 7,
+                secondary: 5,
+                tertiary: 2,
+                quarternary: 1,
+            },
+            TopPredictions {
+                symbol: String::from("AAPB"),
+                primary: 7,
+                secondary: 2,
+                tertiary: -2,
+                quarternary: -1,
+            },
+        ];
+
+        // act
+        let actual = get_highest_x(
+            top_x,
+            &predictions,
+            primary,
+            secondary,
+            tertiary,
+            quarternary,
+        );
+
+        // assert
+        assert!(vectors_are_equal(expected, actual));
+    }
+
+    #[test]
+    fn get_x_high_most_common_result_top_5_of_10_primary_highest_low() {
+        // assign
+        let predictions = vec![
+            Prediction {
+                symbol: "AAPB".to_string(),
+                percentiles: Percentiles {
+                    _25th: -2,
+                    _50th: 2,
+                    _75th: 5,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAPL".to_string(),
+                percentiles: Percentiles {
+                    _25th: -1,
+                    _50th: 1,
+                    _75th: 2,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAL".to_string(),
+                percentiles: Percentiles {
+                    _25th: -7,
+                    _50th: -3,
+                    _75th: 1,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAPD".to_string(),
+                percentiles: Percentiles {
+                    _25th: -2,
+                    _50th: -1,
+                    _75th: 1,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AADI".to_string(),
+                percentiles: Percentiles {
+                    _25th: -2,
+                    _50th: 4,
+                    _75th: 11,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AADR".to_string(),
+                percentiles: Percentiles {
+                    _25th: -2,
+                    _50th: -1,
+                    _75th: 0,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AACG".to_string(),
+                percentiles: Percentiles {
+                    _25th: -6,
+                    _50th: 9,
+                    _75th: 27,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAME".to_string(),
+                percentiles: Percentiles {
+                    _25th: -14,
+                    _50th: -6,
+                    _75th: 3,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAON".to_string(),
+                percentiles: Percentiles {
+                    _25th: 2,
+                    _50th: 5,
+                    _75th: 9,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAOI".to_string(),
+                percentiles: Percentiles {
+                    _25th: -9,
+                    _50th: 3,
+                    _75th: 17,
+                },
+                data: BTreeMap::new(),
+            },
+        ];
+        let top_x = 5;
+        let primary = Box::new(HighestLow {});
+        let secondary = Box::new(MostCommonResult {});
+        let tertiary = Box::new(TotalSpan {});
+        let quarternary = Box::new(WeightedSpan {});
+        let expected = vec![
+            TopPredictions {
+                symbol: String::from("AAON"),
+                primary: 2,
+                secondary: 5,
+                tertiary: 7,
+                quarternary: 1,
+            },
+            TopPredictions {
+                symbol: String::from("AAPL"),
+                primary: -1,
+                secondary: 1,
+                tertiary: 3,
+                quarternary: -1,
+            },
+            TopPredictions {
+                symbol: String::from("AAPB"),
+                primary: -2,
+                secondary: 2,
+                tertiary: 7,
+                quarternary: -1,
+            },
+            TopPredictions {
+                symbol: String::from("AAPD"),
+                primary: -2,
+                secondary: -1,
+                tertiary: 3,
+                quarternary: 1,
+            },
+            TopPredictions {
+                symbol: String::from("AADI"),
+                primary: -2,
+                secondary: 4,
+                tertiary: 13,
+                quarternary: 1,
+            },
+            TopPredictions {
+                symbol: String::from("AADR"),
+                primary: -2,
+                secondary: -1,
+                tertiary: 2,
+                quarternary: 0,
+            },
+        ];
+
+        // act
+        let actual = get_highest_x(
+            top_x,
+            &predictions,
+            primary,
+            secondary,
+            tertiary,
+            quarternary,
+        );
+
+        // assert
+        assert_eq!(actual.len(), 5);
+        assert!(vector_is_subset(actual, expected));
+    }
+
+    #[test]
+    fn get_x_high_most_common_result_top_5_of_10_primary_most_common() {
+        // assign
+        let predictions = vec![
+            Prediction {
+                symbol: "AAPB".to_string(),
+                percentiles: Percentiles {
+                    _25th: -2,
+                    _50th: 2,
+                    _75th: 5,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAPL".to_string(),
+                percentiles: Percentiles {
+                    _25th: -1,
+                    _50th: 1,
+                    _75th: 2,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAL".to_string(),
+                percentiles: Percentiles {
+                    _25th: -7,
+                    _50th: -3,
+                    _75th: 1,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAPD".to_string(),
+                percentiles: Percentiles {
+                    _25th: -2,
+                    _50th: -1,
+                    _75th: 1,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AADI".to_string(),
+                percentiles: Percentiles {
+                    _25th: -2,
+                    _50th: 4,
+                    _75th: 11,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AADR".to_string(),
+                percentiles: Percentiles {
+                    _25th: -2,
+                    _50th: -1,
+                    _75th: 0,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AACG".to_string(),
+                percentiles: Percentiles {
+                    _25th: -6,
+                    _50th: 9,
+                    _75th: 27,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAME".to_string(),
+                percentiles: Percentiles {
+                    _25th: -14,
+                    _50th: -6,
+                    _75th: 3,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAON".to_string(),
+                percentiles: Percentiles {
+                    _25th: 2,
+                    _50th: 5,
+                    _75th: 9,
+                },
+                data: BTreeMap::new(),
+            },
+            Prediction {
+                symbol: "AAOI".to_string(),
+                percentiles: Percentiles {
+                    _25th: -9,
+                    _50th: 3,
+                    _75th: 17,
+                },
+                data: BTreeMap::new(),
+            },
+        ];
+        let top_x = 5;
+        let primary = Box::new(MostCommonResult {});
+        let secondary = Box::new(HighestLow {});
+        let tertiary = Box::new(TotalSpan {});
+        let quarternary = Box::new(WeightedSpan {});
+        let expected = vec![
+            TopPredictions {
+                symbol: String::from("AACG"),
+                primary: 9,
+                secondary: -6,
+                tertiary: 33,
+                quarternary: 3,
+            },
+            TopPredictions {
+                symbol: String::from("AAON"),
+                primary: 5,
+                secondary: 2,
+                tertiary: 7,
+                quarternary: 1,
+            },
+            TopPredictions {
+                symbol: String::from("AADI"),
+                primary: 4,
+                secondary: -2,
+                tertiary: 13,
+                quarternary: 1,
+            },
+            TopPredictions {
+                symbol: String::from("AAOI"),
+                primary: 3,
+                secondary: -9,
+                tertiary: 26,
+                quarternary: 2,
+            },
+            TopPredictions {
+                symbol: String::from("AAPB"),
+                primary: 2,
+                secondary: -2,
+                tertiary: 7,
+                quarternary: -1,
+            },
+        ];
+
+        // act
+        let actual = get_highest_x(
+            top_x,
+            &predictions,
+            primary,
+            secondary,
+            tertiary,
+            quarternary,
+        );
 
         // assert
         assert!(vectors_are_equal(expected, actual));

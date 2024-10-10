@@ -28,6 +28,90 @@ pub mod stock_simulator {
         }
     }
 
+    pub struct MostCommonResult {}
+    pub struct TotalSpan {}
+    pub struct WeightedSpan {}
+    pub struct HighestLow {}
+
+    pub trait PredictionManipulation {
+        fn calculation(&self, prediction: &Prediction) -> i32;
+        fn compare(&self, left: i32, right: i32) -> i8;
+    }
+
+    impl PredictionManipulation for MostCommonResult {
+        fn calculation(&self, prediction: &Prediction) -> i32 {
+            prediction.percentiles._50th
+        }
+
+        fn compare(&self, left: i32, right: i32) -> i8 {
+            if left < right {
+                -1
+            } else if left > right {
+                1
+            } else {
+                0
+            }
+        }
+    }
+
+    impl PredictionManipulation for TotalSpan {
+        fn calculation(&self, prediction: &Prediction) -> i32 {
+            prediction.percentiles._75th - prediction.percentiles._25th
+        }
+
+        fn compare(&self, left: i32, right: i32) -> i8 {
+            if left < right {
+                1
+            } else if left > right {
+                -1
+            } else {
+                0
+            }
+        }
+    }
+
+    impl PredictionManipulation for WeightedSpan {
+        fn calculation(&self, prediction: &Prediction) -> i32 {
+            prediction.percentiles._75th + prediction.percentiles._25th
+                - (2 * prediction.percentiles._50th)
+        }
+
+        fn compare(&self, left: i32, right: i32) -> i8 {
+            if left < right {
+                -1
+            } else if left > right {
+                1
+            } else {
+                0
+            }
+        }
+    }
+
+    impl PredictionManipulation for HighestLow {
+        fn calculation(&self, prediction: &Prediction) -> i32 {
+            prediction.percentiles._25th
+        }
+
+        fn compare(&self, left: i32, right: i32) -> i8 {
+            if left < right {
+                -1
+            } else if left > right {
+                1
+            } else {
+                0
+            }
+        }
+    }
+
+    #[derive(Debug, PartialEq)]
+    pub struct TopPredictions {
+        pub symbol: String,
+        pub primary: i32,
+        pub secondary: i32,
+        pub tertiary: i32,
+        pub quarternary: i32,
+    }
+
     pub fn run_simulator(dir: &PathBuf, periods: u32, number_of_simulations: u32) {
         LOG_FILE_PATH
             .with(|path| *path.borrow_mut() = Some(PathBuf::from("logs/stock_simulator.log")));
@@ -91,27 +175,41 @@ pub mod stock_simulator {
     }
 
     fn output_results(prediction: &Prediction) {
-        // convert prediction to json
-        // save json to converted file or database or something.
+        // instead output an html file that can been seen in a browser with all the data hardcoded
         println!("{:?}", prediction);
     }
 
-    pub(crate) fn get_x_high_most_common_result(
+    pub(crate) fn get_highest_x(
         top_x: usize,
         all: &Vec<Prediction>,
-    ) -> Vec<(&str, i32)> {
-        let mut results: Vec<(&str, i32)> = Vec::new();
+        primary_filter: Box<dyn PredictionManipulation>,
+        secondary_filter: Box<dyn PredictionManipulation>,
+        tertiary_filter: Box<dyn PredictionManipulation>,
+        quarternary_filter: Box<dyn PredictionManipulation>,
+    ) -> Vec<TopPredictions> {
+        let mut results: Vec<TopPredictions> = Vec::new();
 
         for prediction in all {
             let mut index = 0;
-            while index < results.len() && results[index].1 > prediction.percentiles._50th {
+            let primary_calc = primary_filter.calculation(prediction);
+            while index < results.len()
+                && primary_filter.compare(results[index].primary, primary_calc) > 0
+            {
                 index += 1;
             }
 
+            let calculations = TopPredictions {
+                symbol: prediction.symbol.clone(),
+                primary: primary_calc,
+                secondary: secondary_filter.calculation(prediction),
+                tertiary: tertiary_filter.calculation(prediction),
+                quarternary: quarternary_filter.calculation(prediction),
+            };
+
             if index == results.len() {
-                results.push((&prediction.symbol, prediction.percentiles._50th));
+                results.push(calculations);
             } else {
-                results.insert(index, (&prediction.symbol, prediction.percentiles._50th));
+                results.insert(index, calculations);
             }
 
             results.truncate(top_x);
