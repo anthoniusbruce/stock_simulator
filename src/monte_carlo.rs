@@ -16,7 +16,7 @@ pub mod simulations {
     pub struct Prediction {
         pub symbol: String,
         pub percentiles: Percentiles,
-        pub data: BTreeMap<i32, u32>,
+        // pub data: BTreeMap<i32, u32>,
     }
 
     /// Method that will run a number of monte carlo simulations on the data passed in for the number of periods pass in
@@ -44,7 +44,7 @@ pub mod simulations {
         let prediction = Prediction {
             symbol,
             percentiles,
-            data: results,
+            // data: results,
         };
 
         Some(prediction)

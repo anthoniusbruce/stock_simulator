@@ -216,7 +216,6 @@ mod tests {
                     _50th: 2,
                     _75th: 5,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAPL".to_string(),
@@ -225,7 +224,6 @@ mod tests {
                     _50th: 2,
                     _75th: 2,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAL".to_string(),
@@ -234,7 +232,6 @@ mod tests {
                     _50th: -3,
                     _75th: 1,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAPD".to_string(),
@@ -243,7 +240,6 @@ mod tests {
                     _50th: -1,
                     _75th: 1,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AADI".to_string(),
@@ -252,7 +248,6 @@ mod tests {
                     _50th: 4,
                     _75th: 11,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AADR".to_string(),
@@ -261,7 +256,6 @@ mod tests {
                     _50th: -1,
                     _75th: 0,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AACG".to_string(),
@@ -270,7 +264,6 @@ mod tests {
                     _50th: 9,
                     _75th: 27,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAME".to_string(),
@@ -279,7 +272,6 @@ mod tests {
                     _50th: -6,
                     _75th: 3,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAON".to_string(),
@@ -288,7 +280,6 @@ mod tests {
                     _50th: 5,
                     _75th: 9,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAOI".to_string(),
@@ -297,7 +288,6 @@ mod tests {
                     _50th: 3,
                     _75th: 17,
                 },
-                data: BTreeMap::new(),
             },
         ];
         let top_x = 5;
@@ -376,7 +366,6 @@ mod tests {
                     _50th: 2,
                     _75th: 5,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAPL".to_string(),
@@ -385,7 +374,6 @@ mod tests {
                     _50th: 2,
                     _75th: 2,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAL".to_string(),
@@ -394,7 +382,6 @@ mod tests {
                     _50th: 2,
                     _75th: 3,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAPD".to_string(),
@@ -403,7 +390,6 @@ mod tests {
                     _50th: 2,
                     _75th: 2,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AADI".to_string(),
@@ -412,7 +398,6 @@ mod tests {
                     _50th: 2,
                     _75th: 11,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AADR".to_string(),
@@ -421,7 +406,6 @@ mod tests {
                     _50th: 2,
                     _75th: 2,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AACG".to_string(),
@@ -430,7 +414,6 @@ mod tests {
                     _50th: 2,
                     _75th: 27,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAME".to_string(),
@@ -439,7 +422,6 @@ mod tests {
                     _50th: 2,
                     _75th: 3,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAON".to_string(),
@@ -448,7 +430,6 @@ mod tests {
                     _50th: 2,
                     _75th: 9,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAOI".to_string(),
@@ -457,7 +438,6 @@ mod tests {
                     _50th: 2,
                     _75th: 17,
                 },
-                data: BTreeMap::new(),
             },
         ];
         let top_x = 5;
@@ -564,7 +544,6 @@ mod tests {
                     _50th: 2,
                     _75th: 5,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAPL".to_string(),
@@ -573,7 +552,6 @@ mod tests {
                     _50th: 1,
                     _75th: 2,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAL".to_string(),
@@ -582,7 +560,6 @@ mod tests {
                     _50th: -3,
                     _75th: 1,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAPD".to_string(),
@@ -591,7 +568,6 @@ mod tests {
                     _50th: -1,
                     _75th: 1,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AADI".to_string(),
@@ -600,7 +576,6 @@ mod tests {
                     _50th: 4,
                     _75th: 11,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AADR".to_string(),
@@ -609,7 +584,6 @@ mod tests {
                     _50th: -1,
                     _75th: 0,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AACG".to_string(),
@@ -618,7 +592,6 @@ mod tests {
                     _50th: 9,
                     _75th: 27,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAME".to_string(),
@@ -627,7 +600,6 @@ mod tests {
                     _50th: -6,
                     _75th: 3,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAON".to_string(),
@@ -636,7 +608,6 @@ mod tests {
                     _50th: 5,
                     _75th: 9,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAOI".to_string(),
@@ -645,7 +616,6 @@ mod tests {
                     _50th: 3,
                     _75th: 17,
                 },
-                data: BTreeMap::new(),
             },
         ];
         let top_x = 11;
@@ -751,7 +721,6 @@ mod tests {
                     _50th: 2,
                     _75th: 5,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAPL".to_string(),
@@ -760,7 +729,6 @@ mod tests {
                     _50th: 1,
                     _75th: 2,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAL".to_string(),
@@ -769,7 +737,6 @@ mod tests {
                     _50th: -3,
                     _75th: 1,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAPD".to_string(),
@@ -778,7 +745,6 @@ mod tests {
                     _50th: -1,
                     _75th: 1,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AADI".to_string(),
@@ -787,7 +753,6 @@ mod tests {
                     _50th: 4,
                     _75th: 11,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AADR".to_string(),
@@ -796,7 +761,6 @@ mod tests {
                     _50th: -1,
                     _75th: 0,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AACG".to_string(),
@@ -805,7 +769,6 @@ mod tests {
                     _50th: 9,
                     _75th: 27,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAME".to_string(),
@@ -814,7 +777,6 @@ mod tests {
                     _50th: -6,
                     _75th: 3,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAON".to_string(),
@@ -823,7 +785,6 @@ mod tests {
                     _50th: 5,
                     _75th: 9,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAOI".to_string(),
@@ -832,7 +793,6 @@ mod tests {
                     _50th: 3,
                     _75th: 17,
                 },
-                data: BTreeMap::new(),
             },
         ];
         let top_x = 5;
@@ -911,7 +871,6 @@ mod tests {
                     _50th: 2,
                     _75th: 5,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAPL".to_string(),
@@ -920,7 +879,6 @@ mod tests {
                     _50th: 1,
                     _75th: 2,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAL".to_string(),
@@ -929,7 +887,6 @@ mod tests {
                     _50th: -3,
                     _75th: 1,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAPD".to_string(),
@@ -938,7 +895,6 @@ mod tests {
                     _50th: -1,
                     _75th: 1,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AADI".to_string(),
@@ -947,7 +903,6 @@ mod tests {
                     _50th: 4,
                     _75th: 11,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AADR".to_string(),
@@ -956,7 +911,6 @@ mod tests {
                     _50th: -1,
                     _75th: 0,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AACG".to_string(),
@@ -965,7 +919,6 @@ mod tests {
                     _50th: 9,
                     _75th: 27,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAME".to_string(),
@@ -974,7 +927,6 @@ mod tests {
                     _50th: -6,
                     _75th: 3,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAON".to_string(),
@@ -983,7 +935,6 @@ mod tests {
                     _50th: 5,
                     _75th: 9,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAOI".to_string(),
@@ -992,7 +943,6 @@ mod tests {
                     _50th: 3,
                     _75th: 17,
                 },
-                data: BTreeMap::new(),
             },
         ];
         let top_x = 5;
@@ -1063,7 +1013,6 @@ mod tests {
                     _50th: 2,
                     _75th: 5,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAPL".to_string(),
@@ -1072,7 +1021,6 @@ mod tests {
                     _50th: 1,
                     _75th: 2,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAL".to_string(),
@@ -1081,7 +1029,6 @@ mod tests {
                     _50th: -3,
                     _75th: 1,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAPD".to_string(),
@@ -1090,7 +1037,6 @@ mod tests {
                     _50th: -1,
                     _75th: 1,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AADI".to_string(),
@@ -1099,7 +1045,6 @@ mod tests {
                     _50th: 4,
                     _75th: 11,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AADR".to_string(),
@@ -1108,7 +1053,6 @@ mod tests {
                     _50th: -1,
                     _75th: 0,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AACG".to_string(),
@@ -1117,7 +1061,6 @@ mod tests {
                     _50th: 9,
                     _75th: 27,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAME".to_string(),
@@ -1126,7 +1069,6 @@ mod tests {
                     _50th: -6,
                     _75th: 3,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAON".to_string(),
@@ -1135,7 +1077,6 @@ mod tests {
                     _50th: 5,
                     _75th: 9,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAOI".to_string(),
@@ -1144,7 +1085,6 @@ mod tests {
                     _50th: 3,
                     _75th: 17,
                 },
-                data: BTreeMap::new(),
             },
         ];
         let top_x = 5;
@@ -1223,7 +1163,6 @@ mod tests {
                     _50th: 2,
                     _75th: 5,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAPL".to_string(),
@@ -1232,7 +1171,6 @@ mod tests {
                     _50th: 1,
                     _75th: 2,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAL".to_string(),
@@ -1241,7 +1179,6 @@ mod tests {
                     _50th: -3,
                     _75th: 1,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAPD".to_string(),
@@ -1250,7 +1187,6 @@ mod tests {
                     _50th: -1,
                     _75th: 1,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AADI".to_string(),
@@ -1259,7 +1195,6 @@ mod tests {
                     _50th: 4,
                     _75th: 11,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AADR".to_string(),
@@ -1268,7 +1203,6 @@ mod tests {
                     _50th: -1,
                     _75th: 0,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AACG".to_string(),
@@ -1277,7 +1211,6 @@ mod tests {
                     _50th: 9,
                     _75th: 27,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAME".to_string(),
@@ -1286,7 +1219,6 @@ mod tests {
                     _50th: -6,
                     _75th: 3,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAON".to_string(),
@@ -1295,7 +1227,6 @@ mod tests {
                     _50th: 5,
                     _75th: 9,
                 },
-                data: BTreeMap::new(),
             },
             Prediction {
                 symbol: "AAOI".to_string(),
@@ -1304,7 +1235,6 @@ mod tests {
                     _50th: 3,
                     _75th: 17,
                 },
-                data: BTreeMap::new(),
             },
         ];
         let top_x = 5;

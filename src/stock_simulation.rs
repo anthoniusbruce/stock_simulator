@@ -167,16 +167,21 @@ pub mod stock_simulator {
             symbol_file_opt = get_next_file(&dir);
         }
 
-        for prediction in all_symbols {
-            output_results(&prediction);
-        }
+        output_results(&all_symbols);
 
         log("N/A", format!("processed {symbol_count} symbols"));
     }
 
-    fn output_results(prediction: &Prediction) {
+    fn output_results(predictions: &Vec<Prediction>) {
         // instead output an html file that can been seen in a browser with all the data hardcoded
-        println!("{:?}", prediction);
+        let primary = Box::new(MostCommonResult {});
+        let secondary = Box::new(HighestLow {});
+        let tertiary = Box::new(TotalSpan {});
+        let quarternary = Box::new(WeightedSpan {});
+        let prediction_calcs =
+            get_highest_x(100, predictions, primary, secondary, tertiary, quarternary);
+        println!("{:?}", prediction_calcs);
+        println!("{:?}", predictions);
     }
 
     pub(crate) fn get_highest_x(
