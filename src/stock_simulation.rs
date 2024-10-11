@@ -190,18 +190,17 @@ pub mod stock_simulator {
     }
 
     pub(crate) fn get_thresholds(calcs: &Vec<TopPredictions>) -> (i32, i32) {
-        // let count = calcs.len();
-        // if count == 0 {
-        //     return (0, 0);
-        // }
-        // let threshold_length = count / 3;
-        // let low_index = threshold_length - 1;
-        // let high_index = count - threshold_length - 1;
+        let count = calcs.len();
+        if count == 0 {
+            return (0, 0);
+        }
+        let threshold_length = count / 3;
+        let low_index = std::cmp::max(threshold_length, 1) - 1;
+        let high_index = std::cmp::min(count - threshold_length, count - 1);
 
-        // let vec_sorted: Vec<i32> = calcs.into_iter().sorted().map(|p| p.primary).collect();
+        let vec_sorted: Vec<i32> = calcs.into_iter().map(|p| p.most_common).sorted().collect();
 
-        // (vec_sorted[low_index], vec_sorted[high_index])
-        (0, 0)
+        (vec_sorted[low_index], vec_sorted[high_index])
     }
 
     pub(crate) fn get_highest_x(
