@@ -37,7 +37,7 @@ pub mod stock_simulator {
 
     pub trait PredictionManipulation {
         fn calculation(&self, prediction: &Prediction) -> i32;
-        fn compare(&self, left: i32, right: i32) -> i8;
+        fn compare(&self, left: &TopPredictions, right: i32) -> i8;
     }
 
     impl PredictionManipulation for MostCommonResult {
@@ -45,10 +45,10 @@ pub mod stock_simulator {
             prediction.percentiles._50th
         }
 
-        fn compare(&self, left: i32, right: i32) -> i8 {
-            if left < right {
+        fn compare(&self, left: &TopPredictions, right: i32) -> i8 {
+            if left.most_common < right {
                 -1
-            } else if left > right {
+            } else if left.most_common > right {
                 1
             } else {
                 0
@@ -61,10 +61,10 @@ pub mod stock_simulator {
             prediction.percentiles._75th - prediction.percentiles._25th
         }
 
-        fn compare(&self, left: i32, right: i32) -> i8 {
-            if left < right {
+        fn compare(&self, left: &TopPredictions, right: i32) -> i8 {
+            if left.total_span < right {
                 1
-            } else if left > right {
+            } else if left.total_span > right {
                 -1
             } else {
                 0
@@ -78,10 +78,10 @@ pub mod stock_simulator {
                 - (2 * prediction.percentiles._50th)
         }
 
-        fn compare(&self, left: i32, right: i32) -> i8 {
-            if left < right {
+        fn compare(&self, left: &TopPredictions, right: i32) -> i8 {
+            if left.weighted_span < right {
                 -1
-            } else if left > right {
+            } else if left.weighted_span > right {
                 1
             } else {
                 0
@@ -94,10 +94,10 @@ pub mod stock_simulator {
             prediction.percentiles._25th
         }
 
-        fn compare(&self, left: i32, right: i32) -> i8 {
-            if left < right {
+        fn compare(&self, left: &TopPredictions, right: i32) -> i8 {
+            if left.highest_low < right {
                 -1
-            } else if left > right {
+            } else if left.highest_low > right {
                 1
             } else {
                 0
@@ -108,10 +108,10 @@ pub mod stock_simulator {
     #[derive(Debug, PartialEq)]
     pub struct TopPredictions {
         pub symbol: String,
-        pub primary: i32,
-        pub secondary: i32,
-        pub tertiary: i32,
-        pub quarternary: i32,
+        pub most_common: i32,
+        pub highest_low: i32,
+        pub total_span: i32,
+        pub weighted_span: i32,
     }
 
     pub fn run_simulator(dir: &PathBuf, periods: u32, number_of_simulations: u32) {
@@ -176,12 +176,8 @@ pub mod stock_simulator {
 
     fn output_results(predictions: &Vec<Prediction>) {
         // instead output an html file that can been seen in a browser with all the data hardcoded
-        let primary = Box::new(MostCommonResult {});
-        let secondary = Box::new(HighestLow {});
-        let tertiary = Box::new(TotalSpan {});
-        let quarternary = Box::new(WeightedSpan {});
-        let prediction_calcs =
-            get_highest_x(100, predictions, primary, secondary, tertiary, quarternary);
+        let most_common_box = Box::new(MostCommonResult {});
+        let prediction_calcs = get_highest_x(100, predictions, most_common_box);
         let html = get_html(&prediction_calcs);
         println!("{:?}", prediction_calcs);
         println!("{:?}", predictions);
@@ -212,27 +208,23 @@ pub mod stock_simulator {
         top_x: usize,
         all: &Vec<Prediction>,
         primary_filter: Box<dyn PredictionManipulation>,
-        secondary_filter: Box<dyn PredictionManipulation>,
-        tertiary_filter: Box<dyn PredictionManipulation>,
-        quarternary_filter: Box<dyn PredictionManipulation>,
     ) -> Vec<TopPredictions> {
         let mut results: Vec<TopPredictions> = Vec::new();
 
         for prediction in all {
             let mut index = 0;
             let primary_calc = primary_filter.calculation(prediction);
-            while index < results.len()
-                && primary_filter.compare(results[index].primary, primary_calc) > 0
+            while index < results.len() && primary_filter.compare(&results[index], primary_calc) > 0
             {
                 index += 1;
             }
 
             let calculations = TopPredictions {
                 symbol: prediction.symbol.clone(),
-                primary: primary_calc,
-                secondary: secondary_filter.calculation(prediction),
-                tertiary: tertiary_filter.calculation(prediction),
-                quarternary: quarternary_filter.calculation(prediction),
+                most_common: MostCommonResult {}.calculation(prediction),
+                highest_low: HighestLow {}.calculation(prediction),
+                total_span: TotalSpan {}.calculation(prediction),
+                weighted_span: WeightedSpan {}.calculation(prediction),
             };
 
             if index == results.len() {

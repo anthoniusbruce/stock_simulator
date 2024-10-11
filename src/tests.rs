@@ -211,73 +211,73 @@ mod tests {
         let input = vec![
             TopPredictions {
                 symbol: "AACG".to_string(),
-                primary: 9,
-                secondary: -6,
-                tertiary: 33,
-                quarternary: 3,
+                most_common: 9,
+                highest_low: -6,
+                total_span: 33,
+                weighted_span: 3,
             },
             TopPredictions {
                 symbol: "AAON".to_string(),
-                primary: 5,
-                secondary: 2,
-                tertiary: 7,
-                quarternary: 1,
+                most_common: 5,
+                highest_low: 2,
+                total_span: 7,
+                weighted_span: 1,
             },
             TopPredictions {
                 symbol: "AADI".to_string(),
-                primary: 4,
-                secondary: -2,
-                tertiary: 13,
-                quarternary: 1,
+                most_common: 4,
+                highest_low: -2,
+                total_span: 13,
+                weighted_span: 1,
             },
             TopPredictions {
                 symbol: "AAOI".to_string(),
-                primary: 3,
-                secondary: -9,
-                tertiary: 26,
-                quarternary: 2,
+                most_common: 3,
+                highest_low: -9,
+                total_span: 26,
+                weighted_span: 2,
             },
             TopPredictions {
                 symbol: "AAPB".to_string(),
-                primary: 2,
-                secondary: -2,
-                tertiary: 7,
-                quarternary: -1,
+                most_common: 2,
+                highest_low: -2,
+                total_span: 7,
+                weighted_span: -1,
             },
             TopPredictions {
                 symbol: "AAPL".to_string(),
-                primary: 1,
-                secondary: -1,
-                tertiary: 3,
-                quarternary: -1,
+                most_common: 1,
+                highest_low: -1,
+                total_span: 3,
+                weighted_span: -1,
             },
             TopPredictions {
                 symbol: "AAPD".to_string(),
-                primary: -1,
-                secondary: -2,
-                tertiary: 3,
-                quarternary: 1,
+                most_common: -1,
+                highest_low: -2,
+                total_span: 3,
+                weighted_span: 1,
             },
             TopPredictions {
                 symbol: "AADR".to_string(),
-                primary: -1,
-                secondary: -2,
-                tertiary: 2,
-                quarternary: 0,
+                most_common: -1,
+                highest_low: -2,
+                total_span: 2,
+                weighted_span: 0,
             },
             TopPredictions {
                 symbol: "AAL".to_string(),
-                primary: -3,
-                secondary: -7,
-                tertiary: 8,
-                quarternary: 0,
+                most_common: -3,
+                highest_low: -7,
+                total_span: 8,
+                weighted_span: 0,
             },
             TopPredictions {
                 symbol: "AAME".to_string(),
-                primary: -6,
-                secondary: -14,
-                tertiary: 17,
-                quarternary: 1,
+                most_common: -6,
+                highest_low: -14,
+                total_span: 17,
+                weighted_span: 1,
             },
         ];
         let (expected_low, expected_high) = (-1, 4);
@@ -376,64 +376,54 @@ mod tests {
             },
         ];
         let top_x = 5;
-        let primary = Box::new(MostCommonResult {});
-        let secondary = Box::new(HighestLow {});
-        let tertiary = Box::new(TotalSpan {});
-        let quarternary = Box::new(WeightedSpan {});
+        let most_common = Box::new(MostCommonResult {});
         let expected = vec![
             TopPredictions {
                 symbol: "AACG".to_string(),
-                primary: 9,
-                secondary: -6,
-                tertiary: 33,
-                quarternary: 3,
+                most_common: 9,
+                highest_low: -6,
+                total_span: 33,
+                weighted_span: 3,
             },
             TopPredictions {
                 symbol: "AAON".to_string(),
-                primary: 5,
-                secondary: 2,
-                tertiary: 7,
-                quarternary: 1,
+                most_common: 5,
+                highest_low: 2,
+                total_span: 7,
+                weighted_span: 1,
             },
             TopPredictions {
                 symbol: "AADI".to_string(),
-                primary: 4,
-                secondary: -2,
-                tertiary: 13,
-                quarternary: 1,
+                most_common: 4,
+                highest_low: -2,
+                total_span: 13,
+                weighted_span: 1,
             },
             TopPredictions {
                 symbol: "AAOI".to_string(),
-                primary: 3,
-                secondary: -9,
-                tertiary: 26,
-                quarternary: 2,
+                most_common: 3,
+                highest_low: -9,
+                total_span: 26,
+                weighted_span: 2,
             },
             TopPredictions {
                 symbol: "AAPB".to_string(),
-                primary: 2,
-                secondary: -2,
-                tertiary: 7,
-                quarternary: -1,
+                most_common: 2,
+                highest_low: -2,
+                total_span: 7,
+                weighted_span: -1,
             },
             TopPredictions {
                 symbol: "AAPL".to_string(),
-                primary: 2,
-                secondary: -1,
-                tertiary: 3,
-                quarternary: -3,
+                most_common: 2,
+                highest_low: -1,
+                total_span: 3,
+                weighted_span: -3,
             },
         ];
 
         // act
-        let actual = get_highest_x(
-            top_x,
-            &predictions,
-            primary,
-            secondary,
-            tertiary,
-            quarternary,
-        );
+        let actual = get_highest_x(top_x, &predictions, most_common);
 
         // assert
         assert_eq!(actual.len(), 5);
@@ -526,92 +516,82 @@ mod tests {
             },
         ];
         let top_x = 5;
-        let primary = Box::new(MostCommonResult {});
-        let secondary = Box::new(HighestLow {});
-        let tertiary = Box::new(TotalSpan {});
-        let quarternary = Box::new(WeightedSpan {});
+        let most_common = Box::new(MostCommonResult {});
         let expected = vec![
             TopPredictions {
                 symbol: "AACG".to_string(),
-                primary: 2,
-                secondary: -6,
-                tertiary: 33,
-                quarternary: 17,
+                most_common: 2,
+                highest_low: -6,
+                total_span: 33,
+                weighted_span: 17,
             },
             TopPredictions {
                 symbol: "AAON".to_string(),
-                primary: 2,
-                secondary: 2,
-                tertiary: 7,
-                quarternary: 7,
+                most_common: 2,
+                highest_low: 2,
+                total_span: 7,
+                weighted_span: 7,
             },
             TopPredictions {
                 symbol: "AADI".to_string(),
-                primary: 2,
-                secondary: -2,
-                tertiary: 13,
-                quarternary: 5,
+                most_common: 2,
+                highest_low: -2,
+                total_span: 13,
+                weighted_span: 5,
             },
             TopPredictions {
                 symbol: "AAOI".to_string(),
-                primary: 2,
-                secondary: -9,
-                tertiary: 26,
-                quarternary: 4,
+                most_common: 2,
+                highest_low: -9,
+                total_span: 26,
+                weighted_span: 4,
             },
             TopPredictions {
                 symbol: "AAPB".to_string(),
-                primary: 2,
-                secondary: -2,
-                tertiary: 7,
-                quarternary: -1,
+                most_common: 2,
+                highest_low: -2,
+                total_span: 7,
+                weighted_span: -1,
             },
             TopPredictions {
                 symbol: "AAPL".to_string(),
-                primary: 2,
-                secondary: -1,
-                tertiary: 3,
-                quarternary: -3,
+                most_common: 2,
+                highest_low: -1,
+                total_span: 3,
+                weighted_span: -3,
             },
             TopPredictions {
                 symbol: "AAPD".to_string(),
-                primary: 2,
-                secondary: 2,
-                tertiary: 0,
-                quarternary: 0,
+                most_common: 2,
+                highest_low: 2,
+                total_span: 0,
+                weighted_span: 0,
             },
             TopPredictions {
                 symbol: "AADR".to_string(),
-                primary: 2,
-                secondary: -2,
-                tertiary: 4,
-                quarternary: -4,
+                most_common: 2,
+                highest_low: -2,
+                total_span: 4,
+                weighted_span: -4,
             },
             TopPredictions {
                 symbol: "AAL".to_string(),
-                primary: 2,
-                secondary: -7,
-                tertiary: 10,
-                quarternary: -4,
+                most_common: 2,
+                highest_low: -7,
+                total_span: 10,
+                weighted_span: -4,
             },
             TopPredictions {
                 symbol: "AAME".to_string(),
-                primary: 2,
-                secondary: -14,
-                tertiary: 17,
-                quarternary: -15,
+                most_common: 2,
+                highest_low: -14,
+                total_span: 17,
+                weighted_span: -15,
             },
         ];
 
         // act
-        let actual = get_highest_x(
-            top_x,
-            &predictions,
-            primary,
-            secondary,
-            tertiary,
-            quarternary,
-        );
+        let actual = get_highest_x(top_x, &predictions, most_common);
 
         // assert
         assert_eq!(actual.len(), 5);
@@ -704,99 +684,89 @@ mod tests {
             },
         ];
         let top_x = 11;
-        let primary = Box::new(MostCommonResult {});
-        let secondary = Box::new(HighestLow {});
-        let tertiary = Box::new(TotalSpan {});
-        let quarternary = Box::new(WeightedSpan {});
+        let most_common = Box::new(MostCommonResult {});
         let expected = vec![
             TopPredictions {
                 symbol: "AACG".to_string(),
-                primary: 9,
-                secondary: -6,
-                tertiary: 33,
-                quarternary: 3,
+                most_common: 9,
+                highest_low: -6,
+                total_span: 33,
+                weighted_span: 3,
             },
             TopPredictions {
                 symbol: "AAON".to_string(),
-                primary: 5,
-                secondary: 2,
-                tertiary: 7,
-                quarternary: 1,
+                most_common: 5,
+                highest_low: 2,
+                total_span: 7,
+                weighted_span: 1,
             },
             TopPredictions {
                 symbol: "AADI".to_string(),
-                primary: 4,
-                secondary: -2,
-                tertiary: 13,
-                quarternary: 1,
+                most_common: 4,
+                highest_low: -2,
+                total_span: 13,
+                weighted_span: 1,
             },
             TopPredictions {
                 symbol: "AAOI".to_string(),
-                primary: 3,
-                secondary: -9,
-                tertiary: 26,
-                quarternary: 2,
+                most_common: 3,
+                highest_low: -9,
+                total_span: 26,
+                weighted_span: 2,
             },
             TopPredictions {
                 symbol: "AAPB".to_string(),
-                primary: 2,
-                secondary: -2,
-                tertiary: 7,
-                quarternary: -1,
+                most_common: 2,
+                highest_low: -2,
+                total_span: 7,
+                weighted_span: -1,
             },
             TopPredictions {
                 symbol: "AAPL".to_string(),
-                primary: 1,
-                secondary: -1,
-                tertiary: 3,
-                quarternary: -1,
+                most_common: 1,
+                highest_low: -1,
+                total_span: 3,
+                weighted_span: -1,
             },
             TopPredictions {
                 symbol: "AAPD".to_string(),
-                primary: -1,
-                secondary: -2,
-                tertiary: 3,
-                quarternary: 1,
+                most_common: -1,
+                highest_low: -2,
+                total_span: 3,
+                weighted_span: 1,
             },
             TopPredictions {
                 symbol: "AADR".to_string(),
-                primary: -1,
-                secondary: -2,
-                tertiary: 2,
-                quarternary: 0,
+                most_common: -1,
+                highest_low: -2,
+                total_span: 2,
+                weighted_span: 0,
             },
             TopPredictions {
                 symbol: "AAL".to_string(),
-                primary: -3,
-                secondary: -7,
-                tertiary: 8,
-                quarternary: 0,
+                most_common: -3,
+                highest_low: -7,
+                total_span: 8,
+                weighted_span: 0,
             },
             TopPredictions {
                 symbol: "AAME".to_string(),
-                primary: -6,
-                secondary: -14,
-                tertiary: 17,
-                quarternary: 1,
+                most_common: -6,
+                highest_low: -14,
+                total_span: 17,
+                weighted_span: 1,
             },
         ];
 
         // act
-        let actual = get_highest_x(
-            top_x,
-            &predictions,
-            primary,
-            secondary,
-            tertiary,
-            quarternary,
-        );
+        let actual = get_highest_x(top_x, &predictions, most_common);
 
         // assert
         assert!(vectors_are_equal(expected, actual));
     }
 
     #[test]
-    fn get_x_high_most_common_result_top_5_of_10_primary_weighted_span() {
+    fn get_x_high_most_common_result_top_5_of_10_most_common_weighted_span() {
         // assign
         let predictions = vec![
             Prediction {
@@ -881,64 +851,54 @@ mod tests {
             },
         ];
         let top_x = 5;
-        let primary = Box::new(WeightedSpan {});
-        let secondary = Box::new(MostCommonResult {});
-        let tertiary = Box::new(HighestLow {});
-        let quarternary = Box::new(TotalSpan {});
+        let weighted_span = Box::new(WeightedSpan {});
         let expected = vec![
             TopPredictions {
                 symbol: String::from("AACG"),
-                primary: 3,
-                secondary: 9,
-                tertiary: -6,
-                quarternary: 33,
+                weighted_span: 3,
+                most_common: 9,
+                highest_low: -6,
+                total_span: 33,
             },
             TopPredictions {
                 symbol: String::from("AAOI"),
-                primary: 2,
-                secondary: 3,
-                tertiary: -9,
-                quarternary: 26,
+                weighted_span: 2,
+                most_common: 3,
+                highest_low: -9,
+                total_span: 26,
             },
             TopPredictions {
                 symbol: String::from("AAON"),
-                primary: 1,
-                secondary: 5,
-                tertiary: 2,
-                quarternary: 7,
+                weighted_span: 1,
+                most_common: 5,
+                highest_low: 2,
+                total_span: 7,
             },
             TopPredictions {
                 symbol: String::from("AAME"),
-                primary: 1,
-                secondary: -6,
-                tertiary: -14,
-                quarternary: 17,
+                weighted_span: 1,
+                most_common: -6,
+                highest_low: -14,
+                total_span: 17,
             },
             TopPredictions {
                 symbol: String::from("AADI"),
-                primary: 1,
-                secondary: 4,
-                tertiary: -2,
-                quarternary: 13,
+                weighted_span: 1,
+                most_common: 4,
+                highest_low: -2,
+                total_span: 13,
             },
             TopPredictions {
                 symbol: String::from("AAPD"),
-                primary: 1,
-                secondary: -1,
-                tertiary: -2,
-                quarternary: 3,
+                weighted_span: 1,
+                most_common: -1,
+                highest_low: -2,
+                total_span: 3,
             },
         ];
 
         // act
-        let actual = get_highest_x(
-            top_x,
-            &predictions,
-            primary,
-            secondary,
-            tertiary,
-            quarternary,
-        );
+        let actual = get_highest_x(top_x, &predictions, weighted_span);
 
         // assert
         assert_eq!(actual.len(), 5);
@@ -946,7 +906,7 @@ mod tests {
     }
 
     #[test]
-    fn get_x_high_most_common_result_top_5_of_10_primary_total_span() {
+    fn get_x_high_most_common_result_top_5_of_10_most_common_total_span() {
         // assign
         let predictions = vec![
             Prediction {
@@ -1031,64 +991,54 @@ mod tests {
             },
         ];
         let top_x = 5;
-        let primary = Box::new(TotalSpan {});
-        let secondary = Box::new(MostCommonResult {});
-        let tertiary = Box::new(HighestLow {});
-        let quarternary = Box::new(WeightedSpan {});
+        let total_span = Box::new(TotalSpan {});
         let expected = vec![
             TopPredictions {
                 symbol: String::from("AADR"),
-                primary: 2,
-                secondary: -1,
-                tertiary: -2,
-                quarternary: 0,
+                total_span: 2,
+                most_common: -1,
+                highest_low: -2,
+                weighted_span: 0,
             },
             TopPredictions {
                 symbol: String::from("AAPL"),
-                primary: 3,
-                secondary: 1,
-                tertiary: -1,
-                quarternary: -1,
+                total_span: 3,
+                most_common: 1,
+                highest_low: -1,
+                weighted_span: -1,
             },
             TopPredictions {
                 symbol: String::from("AAPD"),
-                primary: 3,
-                secondary: -1,
-                tertiary: -2,
-                quarternary: 1,
+                total_span: 3,
+                most_common: -1,
+                highest_low: -2,
+                weighted_span: 1,
             },
             TopPredictions {
                 symbol: String::from("AAON"),
-                primary: 7,
-                secondary: 5,
-                tertiary: 2,
-                quarternary: 1,
+                total_span: 7,
+                most_common: 5,
+                highest_low: 2,
+                weighted_span: 1,
             },
             TopPredictions {
                 symbol: String::from("AAPB"),
-                primary: 7,
-                secondary: 2,
-                tertiary: -2,
-                quarternary: -1,
+                total_span: 7,
+                most_common: 2,
+                highest_low: -2,
+                weighted_span: -1,
             },
         ];
 
         // act
-        let actual = get_highest_x(
-            top_x,
-            &predictions,
-            primary,
-            secondary,
-            tertiary,
-            quarternary,
-        );
+        let actual = get_highest_x(top_x, &predictions, total_span);
 
         // assert
         assert!(vectors_are_equal(expected, actual));
     }
 
     #[test]
-    fn get_x_high_most_common_result_top_5_of_10_primary_highest_low() {
+    fn get_x_high_most_common_result_top_5_of_10_most_common_highest_low() {
         // assign
         let predictions = vec![
             Prediction {
@@ -1173,64 +1123,54 @@ mod tests {
             },
         ];
         let top_x = 5;
-        let primary = Box::new(HighestLow {});
-        let secondary = Box::new(MostCommonResult {});
-        let tertiary = Box::new(TotalSpan {});
-        let quarternary = Box::new(WeightedSpan {});
+        let highest_low = Box::new(HighestLow {});
         let expected = vec![
             TopPredictions {
                 symbol: String::from("AAON"),
-                primary: 2,
-                secondary: 5,
-                tertiary: 7,
-                quarternary: 1,
+                highest_low: 2,
+                most_common: 5,
+                total_span: 7,
+                weighted_span: 1,
             },
             TopPredictions {
                 symbol: String::from("AAPL"),
-                primary: -1,
-                secondary: 1,
-                tertiary: 3,
-                quarternary: -1,
+                highest_low: -1,
+                most_common: 1,
+                total_span: 3,
+                weighted_span: -1,
             },
             TopPredictions {
                 symbol: String::from("AAPB"),
-                primary: -2,
-                secondary: 2,
-                tertiary: 7,
-                quarternary: -1,
+                highest_low: -2,
+                most_common: 2,
+                total_span: 7,
+                weighted_span: -1,
             },
             TopPredictions {
                 symbol: String::from("AAPD"),
-                primary: -2,
-                secondary: -1,
-                tertiary: 3,
-                quarternary: 1,
+                highest_low: -2,
+                most_common: -1,
+                total_span: 3,
+                weighted_span: 1,
             },
             TopPredictions {
                 symbol: String::from("AADI"),
-                primary: -2,
-                secondary: 4,
-                tertiary: 13,
-                quarternary: 1,
+                highest_low: -2,
+                most_common: 4,
+                total_span: 13,
+                weighted_span: 1,
             },
             TopPredictions {
                 symbol: String::from("AADR"),
-                primary: -2,
-                secondary: -1,
-                tertiary: 2,
-                quarternary: 0,
+                highest_low: -2,
+                most_common: -1,
+                total_span: 2,
+                weighted_span: 0,
             },
         ];
 
         // act
-        let actual = get_highest_x(
-            top_x,
-            &predictions,
-            primary,
-            secondary,
-            tertiary,
-            quarternary,
-        );
+        let actual = get_highest_x(top_x, &predictions, highest_low);
 
         // assert
         assert_eq!(actual.len(), 5);
@@ -1238,7 +1178,7 @@ mod tests {
     }
 
     #[test]
-    fn get_x_high_most_common_result_top_5_of_10_primary_most_common() {
+    fn get_x_high_most_common_result_top_5_of_10_most_common_most_common() {
         // assign
         let predictions = vec![
             Prediction {
@@ -1323,57 +1263,47 @@ mod tests {
             },
         ];
         let top_x = 5;
-        let primary = Box::new(MostCommonResult {});
-        let secondary = Box::new(HighestLow {});
-        let tertiary = Box::new(TotalSpan {});
-        let quarternary = Box::new(WeightedSpan {});
+        let most_common = Box::new(MostCommonResult {});
         let expected = vec![
             TopPredictions {
                 symbol: String::from("AACG"),
-                primary: 9,
-                secondary: -6,
-                tertiary: 33,
-                quarternary: 3,
+                most_common: 9,
+                highest_low: -6,
+                total_span: 33,
+                weighted_span: 3,
             },
             TopPredictions {
                 symbol: String::from("AAON"),
-                primary: 5,
-                secondary: 2,
-                tertiary: 7,
-                quarternary: 1,
+                most_common: 5,
+                highest_low: 2,
+                total_span: 7,
+                weighted_span: 1,
             },
             TopPredictions {
                 symbol: String::from("AADI"),
-                primary: 4,
-                secondary: -2,
-                tertiary: 13,
-                quarternary: 1,
+                most_common: 4,
+                highest_low: -2,
+                total_span: 13,
+                weighted_span: 1,
             },
             TopPredictions {
                 symbol: String::from("AAOI"),
-                primary: 3,
-                secondary: -9,
-                tertiary: 26,
-                quarternary: 2,
+                most_common: 3,
+                highest_low: -9,
+                total_span: 26,
+                weighted_span: 2,
             },
             TopPredictions {
                 symbol: String::from("AAPB"),
-                primary: 2,
-                secondary: -2,
-                tertiary: 7,
-                quarternary: -1,
+                most_common: 2,
+                highest_low: -2,
+                total_span: 7,
+                weighted_span: -1,
             },
         ];
 
         // act
-        let actual = get_highest_x(
-            top_x,
-            &predictions,
-            primary,
-            secondary,
-            tertiary,
-            quarternary,
-        );
+        let actual = get_highest_x(top_x, &predictions, most_common);
 
         // assert
         assert!(vectors_are_equal(expected, actual));
