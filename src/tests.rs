@@ -8,8 +8,8 @@ mod tests {
         get_percentiles, perform_simulation_calculation, simulate_period, Percentiles, Prediction,
     };
     use crate::stock_simulation::stock_simulator::{
-        get_highest_x, get_simulation_data, HighestLow, MostCommonResult, TopPredictions,
-        TotalSpan, WeightedSpan,
+        get_highest_x, get_simulation_data, get_thresholds, HighestLow, MostCommonResult,
+        TopPredictions, TotalSpan, WeightedSpan,
     };
 
     fn vectors_are_equal<T: PartialEq + Debug>(v1: Vec<T>, v2: Vec<T>) -> bool {
@@ -203,6 +203,91 @@ mod tests {
             }
             Err(e) => assert!(false, "{e}"),
         }
+    }
+
+    #[test]
+    fn get_most_common_thresholds_happy_path() {
+        // assign
+        let input = vec![
+            TopPredictions {
+                symbol: "AACG".to_string(),
+                primary: 9,
+                secondary: -6,
+                tertiary: 33,
+                quarternary: 3,
+            },
+            TopPredictions {
+                symbol: "AAON".to_string(),
+                primary: 5,
+                secondary: 2,
+                tertiary: 7,
+                quarternary: 1,
+            },
+            TopPredictions {
+                symbol: "AADI".to_string(),
+                primary: 4,
+                secondary: -2,
+                tertiary: 13,
+                quarternary: 1,
+            },
+            TopPredictions {
+                symbol: "AAOI".to_string(),
+                primary: 3,
+                secondary: -9,
+                tertiary: 26,
+                quarternary: 2,
+            },
+            TopPredictions {
+                symbol: "AAPB".to_string(),
+                primary: 2,
+                secondary: -2,
+                tertiary: 7,
+                quarternary: -1,
+            },
+            TopPredictions {
+                symbol: "AAPL".to_string(),
+                primary: 1,
+                secondary: -1,
+                tertiary: 3,
+                quarternary: -1,
+            },
+            TopPredictions {
+                symbol: "AAPD".to_string(),
+                primary: -1,
+                secondary: -2,
+                tertiary: 3,
+                quarternary: 1,
+            },
+            TopPredictions {
+                symbol: "AADR".to_string(),
+                primary: -1,
+                secondary: -2,
+                tertiary: 2,
+                quarternary: 0,
+            },
+            TopPredictions {
+                symbol: "AAL".to_string(),
+                primary: -3,
+                secondary: -7,
+                tertiary: 8,
+                quarternary: 0,
+            },
+            TopPredictions {
+                symbol: "AAME".to_string(),
+                primary: -6,
+                secondary: -14,
+                tertiary: 17,
+                quarternary: 1,
+            },
+        ];
+        let (expected_low, expected_high) = (-1, 4);
+
+        // act
+        let (actual_low, actual_high) = get_thresholds(&input);
+
+        // assert
+        assert_eq!(expected_low, actual_low);
+        assert_eq!(expected_high, actual_high);
     }
 
     #[test]

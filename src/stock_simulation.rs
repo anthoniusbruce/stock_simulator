@@ -7,6 +7,8 @@ pub mod stock_simulator {
         path::PathBuf,
     };
 
+    use itertools::Itertools;
+
     use crate::{
         monte_carlo::simulations::{self, Prediction},
         utilities::util::log,
@@ -180,8 +182,30 @@ pub mod stock_simulator {
         let quarternary = Box::new(WeightedSpan {});
         let prediction_calcs =
             get_highest_x(100, predictions, primary, secondary, tertiary, quarternary);
+        let html = get_html(&prediction_calcs);
         println!("{:?}", prediction_calcs);
         println!("{:?}", predictions);
+    }
+
+    pub(crate) fn get_html(calcs: &Vec<TopPredictions>) -> String {
+        let (low, high) = get_thresholds(calcs);
+
+        String::new()
+    }
+
+    pub(crate) fn get_thresholds(calcs: &Vec<TopPredictions>) -> (i32, i32) {
+        // let count = calcs.len();
+        // if count == 0 {
+        //     return (0, 0);
+        // }
+        // let threshold_length = count / 3;
+        // let low_index = threshold_length - 1;
+        // let high_index = count - threshold_length - 1;
+
+        // let vec_sorted: Vec<i32> = calcs.into_iter().sorted().map(|p| p.primary).collect();
+
+        // (vec_sorted[low_index], vec_sorted[high_index])
+        (0, 0)
     }
 
     pub(crate) fn get_highest_x(
