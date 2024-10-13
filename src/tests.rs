@@ -9,7 +9,7 @@ mod tests {
     };
     use crate::stock_simulation::stock_simulator::{
         get_highest_x, get_simulation_data, get_thresholds, HighestLow, MostCommonResult,
-        TopPredictions, TotalSpan, WeightedSpan,
+        Thresholds, TopPredictions, TotalSpan, WeightedSpan,
     };
 
     fn vectors_are_equal<T: PartialEq + Debug>(v1: Vec<T>, v2: Vec<T>) -> bool {
@@ -206,21 +206,27 @@ mod tests {
     }
 
     #[test]
-    fn get_most_common_thresholds_zero_items() {
+    fn get_thresholds_zero_items() {
         // assign
         let input = Vec::new();
-        let (expected_low, expected_high) = (0, 0);
+        let expected = Thresholds {
+            most_common_green: 0,
+            most_common_yellow: 0,
+            highest_low_green: 0,
+            highest_low_yellow: 0,
+            total_span_green: 0,
+            total_span_yellow: 0,
+        };
 
         // act
-        let (actual_low, actual_high) = get_thresholds(&input);
+        let actual = get_thresholds(&input);
 
         // assert
-        assert_eq!(expected_low, actual_low);
-        assert_eq!(expected_high, actual_high);
+        assert_eq!(expected, actual);
     }
 
     #[test]
-    fn get_most_common_thresholds_one_item() {
+    fn get_thresholds_one_item() {
         // assign
         let input = vec![TopPredictions {
             symbol: "AACG".to_string(),
@@ -229,18 +235,24 @@ mod tests {
             total_span: 33,
             weighted_span: 3,
         }];
-        let (expected_low, expected_high) = (9, 9);
+        let expected = Thresholds {
+            most_common_green: 9,
+            most_common_yellow: 9,
+            highest_low_green: -6,
+            highest_low_yellow: -6,
+            total_span_green: 33,
+            total_span_yellow: 33,
+        };
 
         // act
-        let (actual_low, actual_high) = get_thresholds(&input);
+        let actual = get_thresholds(&input);
 
         // assert
-        assert_eq!(expected_low, actual_low);
-        assert_eq!(expected_high, actual_high);
+        assert_eq!(expected, actual);
     }
 
     #[test]
-    fn get_most_common_thresholds_two_items_both_same() {
+    fn get_thresholds_two_items_both_same() {
         // assign
         let input = vec![
             TopPredictions {
@@ -253,22 +265,28 @@ mod tests {
             TopPredictions {
                 symbol: "AAON".to_string(),
                 most_common: 9,
-                highest_low: 2,
-                total_span: 7,
-                weighted_span: 1,
+                highest_low: -6,
+                total_span: 33,
+                weighted_span: 3,
             },
         ];
-        let (expected_low, expected_high) = (9, 9);
+        let expected = Thresholds {
+            most_common_green: 9,
+            most_common_yellow: 9,
+            highest_low_green: -6,
+            highest_low_yellow: -6,
+            total_span_green: 33,
+            total_span_yellow: 33,
+        };
 
         // act
-        let (actual_low, actual_high) = get_thresholds(&input);
+        let actual = get_thresholds(&input);
 
         // assert
-        assert_eq!(expected_low, actual_low);
-        assert_eq!(expected_high, actual_high);
+        assert_eq!(expected, actual);
     }
     #[test]
-    fn get_most_common_thresholds_two_items() {
+    fn get_thresholds_two_items() {
         // assign
         let input = vec![
             TopPredictions {
@@ -286,18 +304,24 @@ mod tests {
                 weighted_span: 1,
             },
         ];
-        let (expected_low, expected_high) = (5, 9);
+        let expected = Thresholds {
+            most_common_green: 9,
+            most_common_yellow: 5,
+            highest_low_green: 2,
+            highest_low_yellow: -6,
+            total_span_green: 7,
+            total_span_yellow: 33,
+        };
 
         // act
-        let (actual_low, actual_high) = get_thresholds(&input);
+        let actual = get_thresholds(&input);
 
         // assert
-        assert_eq!(expected_low, actual_low);
-        assert_eq!(expected_high, actual_high);
+        assert_eq!(expected, actual);
     }
 
     #[test]
-    fn get_most_common_thresholds_happy_path() {
+    fn get_thresholds_happy_path() {
         // assign
         let input = vec![
             TopPredictions {
@@ -372,13 +396,20 @@ mod tests {
             },
         ];
         let (expected_low, expected_high) = (-1, 4);
+        let expected = Thresholds {
+            most_common_green: 4,
+            most_common_yellow: -1,
+            highest_low_green: -2,
+            highest_low_yellow: -7,
+            total_span_green: 3,
+            total_span_yellow: 17,
+        };
 
         // act
-        let (actual_low, actual_high) = get_thresholds(&input);
+        let actual = get_thresholds(&input);
 
         // assert
-        assert_eq!(expected_low, actual_low);
-        assert_eq!(expected_high, actual_high);
+        assert_eq!(expected, actual);
     }
 
     #[test]

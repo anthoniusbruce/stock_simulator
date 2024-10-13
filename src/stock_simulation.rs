@@ -5,6 +5,7 @@ pub mod stock_simulator {
         fs::{self, DirEntry},
         io::{self, ErrorKind},
         path::PathBuf,
+        vec,
     };
 
     use itertools::Itertools;
@@ -114,6 +115,16 @@ pub mod stock_simulator {
         pub weighted_span: i32,
     }
 
+    #[derive(PartialEq, Debug)]
+    pub struct Thresholds {
+        pub most_common_green: i32,
+        pub most_common_yellow: i32,
+        pub highest_low_green: i32,
+        pub highest_low_yellow: i32,
+        pub total_span_green: i32,
+        pub total_span_yellow: i32,
+    }
+
     pub fn run_simulator(dir: &PathBuf, periods: u32, number_of_simulations: u32) {
         LOG_FILE_PATH
             .with(|path| *path.borrow_mut() = Some(PathBuf::from("logs/stock_simulator.log")));
@@ -184,23 +195,44 @@ pub mod stock_simulator {
     }
 
     pub(crate) fn get_html(calcs: &Vec<TopPredictions>) -> String {
-        let (low, high) = get_thresholds(calcs);
+        let threholds = get_thresholds(calcs);
 
         String::new()
     }
 
-    pub(crate) fn get_thresholds(calcs: &Vec<TopPredictions>) -> (i32, i32) {
+    pub(crate) fn get_thresholds(calcs: &Vec<TopPredictions>) -> Thresholds {
         let count = calcs.len();
         if count == 0 {
-            return (0, 0);
+            return Thresholds {
+                most_common_green: 0,
+                most_common_yellow: 0,
+                highest_low_green: 0,
+                highest_low_yellow: 0,
+                total_span_green: 0,
+                total_span_yellow: 0,
+            };
         }
         let threshold_length = count / 3;
         let low_index = std::cmp::max(threshold_length, 1) - 1;
         let high_index = std::cmp::min(count - threshold_length, count - 1);
 
-        let vec_sorted: Vec<i32> = calcs.into_iter().map(|p| p.most_common).sorted().collect();
+        let most_common_sorted: Vec<i32> =
+            calcs.into_iter().map(|p| p.most_common).sorted().collect();
+        let highest_low_sorted: Vec<i32> =
+            calcs.into_iter().map(|p| p.highest_low).sorted().collect();
+        let total_span_sorted: Vec<i32> =
+            calcs.into_iter().map(|p| p.total_span).sorted().collect();
 
-        (vec_sorted[low_index], vec_sorted[high_index])
+        let thresholds = Thresholds {
+            most_common_green: most_common_sorted[high_index],
+            most_common_yellow: most_common_sorted[low_index],
+            highest_low_green: highest_low_sorted[high_index],
+            highest_low_yellow: highest_low_sorted[low_index],
+            total_span_green: total_span_sorted[low_index],
+            total_span_yellow: total_span_sorted[high_index],
+        };
+
+        thresholds
     }
 
     pub(crate) fn get_highest_x(
