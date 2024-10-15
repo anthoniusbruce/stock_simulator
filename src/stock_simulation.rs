@@ -14,7 +14,6 @@ pub mod stock_simulator {
     use crate::{
         monte_carlo::simulations::{self, Prediction},
         utilities::util::log,
-        LOG_FILE_PATH,
     };
 
     #[derive(Debug)]
@@ -128,13 +127,11 @@ pub mod stock_simulator {
 
     pub fn run_simulator(
         dir: &PathBuf,
-        output_html: &PathBuf,
         periods: u32,
         number_of_simulations: u32,
+        top_x: usize,
+        output_html: &PathBuf,
     ) {
-        LOG_FILE_PATH
-            .with(|path| *path.borrow_mut() = Some(PathBuf::from("logs/stock_simulator.log")));
-
         // get the path to the next file to be processed
         let mut symbol_file_opt = get_next_file(&dir);
 
@@ -186,15 +183,15 @@ pub mod stock_simulator {
             symbol_file_opt = get_next_file(&dir);
         }
 
-        output_results(output_html, &all_symbols);
+        output_results(top_x, output_html, &all_symbols);
 
         log("N/A", format!("processed {symbol_count} symbols"));
     }
 
-    fn output_results(output_html: &PathBuf, predictions: &Vec<Prediction>) {
+    fn output_results(top_x: usize, output_html: &PathBuf, predictions: &Vec<Prediction>) {
         // instead output an html file that can been seen in a browser with all the data hardcoded
         let most_common_box = Box::new(MostCommonResult {});
-        let prediction_calcs = get_highest_x(100, predictions, most_common_box);
+        let prediction_calcs = get_highest_x(top_x, predictions, most_common_box);
         let html = get_html(&prediction_calcs);
         println!("{:?}", prediction_calcs);
         println!("{:?}", predictions);
