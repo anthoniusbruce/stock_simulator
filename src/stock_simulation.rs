@@ -215,7 +215,7 @@ pub mod stock_simulator {
 
         for pred in calcs {
             let mut outer_div = Container::new(ContainerType::Div)
-                .with_attributes(vec![("class", "items-container")]);
+                .with_attributes(vec![("class", "item-container")]);
 
             let mut title_div =
                 Container::new(ContainerType::Div).with_attributes(vec![("class", "item-header")]);
@@ -299,8 +299,8 @@ pub mod stock_simulator {
                 ("name", "viewport"),
                 ("content", "width=device-width, initial-scale=1.0"),
             ])
-            .with_style(include_str!("style.css"))
             .with_title("Stock Predictions")
+            .with_style(include_str!("style.css"))
             .with_header(
                 1,
                 chrono::Local::now().format("Stock Predictions - %B %d, %Y"),
