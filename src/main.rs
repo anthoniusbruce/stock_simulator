@@ -14,6 +14,7 @@ fn main() {
     let dir = PathBuf::from("test_data");
     let periods = 10;
     let number_of_simulations = 750_000;
+    let output_html = PathBuf::from("predictions.html");
 
-    run_simulator(&dir, periods, number_of_simulations);
+    run_simulator(&dir, &output_html, periods, number_of_simulations);
 }

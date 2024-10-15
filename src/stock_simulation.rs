@@ -126,7 +126,12 @@ pub mod stock_simulator {
         pub total_span_yellow: i32,
     }
 
-    pub fn run_simulator(dir: &PathBuf, periods: u32, number_of_simulations: u32) {
+    pub fn run_simulator(
+        dir: &PathBuf,
+        output_html: &PathBuf,
+        periods: u32,
+        number_of_simulations: u32,
+    ) {
         LOG_FILE_PATH
             .with(|path| *path.borrow_mut() = Some(PathBuf::from("logs/stock_simulator.log")));
 
@@ -181,22 +186,22 @@ pub mod stock_simulator {
             symbol_file_opt = get_next_file(&dir);
         }
 
-        output_results(&all_symbols);
+        output_results(output_html, &all_symbols);
 
         log("N/A", format!("processed {symbol_count} symbols"));
     }
 
-    fn output_results(predictions: &Vec<Prediction>) {
+    fn output_results(output_html: &PathBuf, predictions: &Vec<Prediction>) {
         // instead output an html file that can been seen in a browser with all the data hardcoded
         let most_common_box = Box::new(MostCommonResult {});
         let prediction_calcs = get_highest_x(100, predictions, most_common_box);
         let html = get_html(&prediction_calcs);
         println!("{:?}", prediction_calcs);
         println!("{:?}", predictions);
-        save_results(PathBuf::from("predictions.html"), &html);
+        save_results(output_html, &html);
     }
 
-    fn save_results(path: PathBuf, html: &str) {
+    fn save_results(path: &PathBuf, html: &str) {
         let file_result = File::create(path);
         match file_result {
             Err(e) => log("N/A", e),
