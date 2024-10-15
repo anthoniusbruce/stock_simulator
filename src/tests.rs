@@ -50,6 +50,56 @@ mod tests {
         return true;
     }
 
+    //#[test]
+    // fn build_html_page() {
+    //     // assign
+    //     let today = chrono::Local::now().format("%B %d, %Y");
+    //     let input = vec![
+    //         TopPredictions {
+    //             symbol: "AACG".to_string(),
+    //             most_common: 9,
+    //             highest_low: -6,
+    //             total_span: 33,
+    //             weighted_span: -1,
+    //         },
+    //         TopPredictions {
+    //             symbol: "AAON".to_string(),
+    //             most_common: 8,
+    //             highest_low: -1,
+    //             total_span: 30,
+    //             weighted_span: 0,
+    //         },
+    //     ];
+
+    //     let expected = format!(
+    //         "<!DOCTYPE html><html><head><meta charset=\"uft-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\
+    //         <title>Stock Predictions</title></head><body><h1>Stock Predictions - {}</h1>\
+    //         <div class=\"items-container\">\
+    //             <div class=\"items-container\">\
+    //                 <div class=\"item-header\">AACG</div>\
+    //                 <div class=\"info\">Most common result: <span class=\"primary green\">9</span></div>\
+    //                 <div class=\"info\">Bottom 25th: <span class=\"yellow\">-6</span></div>\
+    //                 <div class=\"info\">25th to 75th span: <span class=\"yellow\">33</span></div>\
+    //                 <div class=\"info\">Weighted span: <span class=\"red\">-1</span></div>\
+    //             </div>\
+    //             <div class=\"items-container\">\
+    //                 <div class=\"item-header\">AAON</div>\
+    //                 <div class=\"info\">Most common result: <span class=\"primary yellow\">8</span></div>\
+    //                 <div class=\"info\">Bottom 25th: <span class=\"green\">-1</span></div>\
+    //                 <div class=\"info\">25th to 75th span: <span class=\"green\">30</span></div>\
+    //                 <div class=\"info\">Weighted span: <span class=\"yellow\">0</span></div>\
+    //             </div>\
+    //         </div></body></html>",
+    //         today
+    //     );
+
+    //     // act
+    //     let actual = get_html(&input);
+
+    //     // assert
+    //     assert_eq!(actual, expected);
+    // }
+
     #[test]
     fn simulate_period_40_random_of_20_floats() {
         // assign
@@ -395,7 +445,6 @@ mod tests {
                 weighted_span: 1,
             },
         ];
-        let (expected_low, expected_high) = (-1, 4);
         let expected = Thresholds {
             most_common_green: 4,
             most_common_yellow: -1,

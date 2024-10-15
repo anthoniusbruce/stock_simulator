@@ -2,12 +2,13 @@ pub mod stock_simulator {
     use std::{
         error::Error,
         fmt,
-        fs::{self, DirEntry},
-        io::{self, ErrorKind},
+        fs::{self, DirEntry, File},
+        io::{self, ErrorKind, Write},
         path::PathBuf,
         vec,
     };
 
+    use build_html::{Container, ContainerType, Html, HtmlContainer, HtmlPage};
     use itertools::Itertools;
 
     use crate::{
@@ -192,12 +193,121 @@ pub mod stock_simulator {
         let html = get_html(&prediction_calcs);
         println!("{:?}", prediction_calcs);
         println!("{:?}", predictions);
+        save_results(PathBuf::from("predictions.html"), &html);
+    }
+
+    fn save_results(path: PathBuf, html: &str) {
+        let file_result = File::create(path);
+        match file_result {
+            Err(e) => log("N/A", e),
+            Ok(mut file) => match file.write_all(html.as_bytes()) {
+                Err(e) => log("N/A", e),
+                Ok(_) => (),
+            },
+        }
     }
 
     pub(crate) fn get_html(calcs: &Vec<TopPredictions>) -> String {
         let threholds = get_thresholds(calcs);
 
-        String::new()
+        let mut list =
+            Container::new(ContainerType::Div).with_attributes(vec![("class", "items-container")]);
+
+        for pred in calcs {
+            let mut outer_div = Container::new(ContainerType::Div)
+                .with_attributes(vec![("class", "items-container")]);
+
+            let mut title_div =
+                Container::new(ContainerType::Div).with_attributes(vec![("class", "item-header")]);
+            title_div.add_html(&*pred.symbol);
+            outer_div.add_container(title_div);
+
+            // Most Common
+            let mut most_common =
+                Container::new(ContainerType::Div).with_attributes(vec![("class", "info")]);
+            let color: &str;
+            if pred.most_common >= threholds.most_common_green {
+                color = "green";
+            } else if pred.most_common < threholds.most_common_yellow {
+                color = "red";
+            } else {
+                color = "yellow";
+            }
+            most_common.add_html(format!(
+                "Most common result: <span class=\"primary {}\">{}</span>",
+                color, pred.most_common
+            ));
+            outer_div.add_container(most_common);
+
+            // Highest Low
+            let mut highest_low =
+                Container::new(ContainerType::Div).with_attributes(vec![("class", "info")]);
+            let color: &str;
+            if pred.highest_low >= threholds.highest_low_green {
+                color = "green";
+            } else if pred.highest_low < threholds.highest_low_yellow {
+                color = "red";
+            } else {
+                color = "yellow";
+            }
+            highest_low.add_html(format!(
+                "Bottom 25th: <span class=\"{}\">{}</span>",
+                color, pred.highest_low
+            ));
+            outer_div.add_container(highest_low);
+
+            // Total Span
+            let mut total_span =
+                Container::new(ContainerType::Div).with_attributes(vec![("class", "info")]);
+            let color: &str;
+            if pred.total_span <= threholds.total_span_green {
+                color = "green";
+            } else if pred.total_span > threholds.total_span_yellow {
+                color = "red";
+            } else {
+                color = "yellow";
+            }
+            total_span.add_html(format!(
+                "25th to 75th span: <span class=\"{}\">{}</span>",
+                color, pred.total_span
+            ));
+            outer_div.add_container(total_span);
+
+            // Weighted Span
+            let mut weighted_span =
+                Container::new(ContainerType::Div).with_attributes(vec![("class", "info")]);
+            let color: &str;
+            if pred.weighted_span > 0 {
+                color = "green";
+            } else if pred.weighted_span < 0 {
+                color = "red";
+            } else {
+                color = "yellow";
+            }
+            weighted_span.add_html(format!(
+                "Weighted span: <span class=\"{}\">{}</span>",
+                color, pred.weighted_span
+            ));
+            outer_div.add_container(weighted_span);
+
+            list.add_container(outer_div);
+        }
+
+        let page = HtmlPage::new()
+            .with_meta(vec![("charset", "uft-8")])
+            .with_meta(vec![
+                ("name", "viewport"),
+                ("content", "width=device-width, initial-scale=1.0"),
+            ])
+            .with_style(include_str!("style.css"))
+            .with_title("Stock Predictions")
+            .with_header(
+                1,
+                chrono::Local::now().format("Stock Predictions - %B %d, %Y"),
+            )
+            .with_container(list);
+
+        page.to_html_string()
     }
 
     pub(crate) fn get_thresholds(calcs: &Vec<TopPredictions>) -> Thresholds {
