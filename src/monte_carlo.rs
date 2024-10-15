@@ -26,6 +26,7 @@ pub mod simulations {
         periods: u32,
         number_of_simulations: u32,
     ) -> Option<Prediction> {
+        static mut SANITY_CHECK: bool = false;
         let mut results: BTreeMap<i32, u32> = BTreeMap::new();
 
         for _ in 1..number_of_simulations {
@@ -40,6 +41,12 @@ pub mod simulations {
             return None;
         }
 
+        if !unsafe { SANITY_CHECK } {
+            unsafe { SANITY_CHECK = true };
+            let total_sims = get_total_sim_count(&results);
+            log(&symbol, format!("total simulations: {total_sims}"));
+        }
+
         let percentiles = get_percentiles(&results, number_of_simulations).unwrap();
         let prediction = Prediction {
             symbol,
@@ -48,6 +55,11 @@ pub mod simulations {
         };
 
         Some(prediction)
+    }
+
+    fn get_total_sim_count(results: &BTreeMap<i32, u32>) -> u32 {
+        let values: Vec<u32> = results.values().cloned().collect();
+        values.iter().sum()
     }
 
     pub(crate) fn get_percentiles(results: &BTreeMap<i32, u32>, total: u32) -> Option<Percentiles> {

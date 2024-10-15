@@ -105,7 +105,7 @@ fn validate_args(source_dir: &PathBuf, output_dir: &PathBuf) {
         output_exists = Path::exists(&output);
     }
     if !output_exists {
-        let error = "log directory does not exist";
+        let error = "output directory does not exist";
         log("N/A", error);
         panic!("{error}");
     }
