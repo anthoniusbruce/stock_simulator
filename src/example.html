@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Predictions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: white; /* White background for the page */
+            color: black; /* Default text color for the page */
+        }
+
+        h1 {
+            color: black; /* Black title for the page */
+            text-align: center; /* Center align the title */
+        }
+
+        /* Flex container to hold the items */
+        .items-container {
+            display: flex;
+            flex-wrap: wrap; /* Allow items to wrap to the next line */
+            justify-content: space-around; /* Evenly distribute items */
+            gap: 20px; /* Add space between the items */
+        }
+
+        .item-container {
+            flex: 1 1 300px; /* Responsive flex: min width 300px, flexible width */
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: black; /* Black background for each item */
+            color: white; /* White text for the item */
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow for effect */
+            max-width: 400px; /* Set a max width for each item */
+            min-width: 300px; /* Set a minimum width for each item */
+            box-sizing: border-box; /* Ensure padding is included in width */
+        }
+
+        .item-header {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .info {
+            font-size: 1em;
+            margin: 5px 0;
+        }
+
+        /* Font size for middle numbers */
+        .primary {
+            font-size: 1.5em; /* 1.5 times bigger */
+        }
+
+        /* Dynamic color classes */
+        .red {
+            color: red;
+        }
+
+        .yellow {
+            color: yellow;
+        }
+
+        .green {
+            color: lightgreen;
+        }
+
+        /* Responsive behavior */
+        @media (max-width: 500px) {
+            .item-container {
+                flex: 1 1 100%; /* On small screens, items will take full width */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Stock Predictions - October 14, 2024</h1>
+
+    <div class="items-container">
+        <!-- Example of one item -->
+        <div class="item-container">
+            <div class="item-header">Item 1</div>
+            <div class="info">Most common result: <span class="primary yellow">15</span></div>
+            <div class="info">Bottom 25th: <span class="red">5</span></div>
+            <div class="info">25th to 75th span: <span class="green">20</span></div>
+            <div class="info">Weighted span: <span class="green">1</span></div>
+        </div>
+
+        <div class="item-container">
+            <div class="item-header">Item 2</div>
+            <div class="info">Most common result: <span class="primary green">30</span></div>
+            <div class="info">Bottom 25th: <span class="yellow">10</span></div>
+            <div class="info">25th to 75th span: <span class="red">40</span></div>
+            <div class="info">Weighted span: <span class="red">-1</span></div>
+        </div>
+
+        <div class="item-container">
+            <div class="item-header">Item 3</div>
+            <div class="info">Most common result: <span class="primary red">45</span></div>
+            <div class="info">Bottom 25th: <span class="green">20</span></div>
+            <div class="info">25th to 75th span: <span class="yellow">50</span></div>
+            <div class="info">Weighted span: <span class="yellow">0</span></div>
+        </div>
+
+        <!-- Add more items here -->
+    </div>
+
+</body>
+</html>

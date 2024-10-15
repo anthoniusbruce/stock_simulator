@@ -2,3 +2,4 @@
 /logs
 .DS_Store
 *.html
+!src/example.html
