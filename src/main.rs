@@ -40,7 +40,7 @@ fn main() {
     let opt = Opt::from_args_safe();
     match opt {
         Err(e) => {
-            println!("{:?}", e);
+            println!("{}", e);
             return;
         }
         Ok(args) => {
@@ -56,6 +56,7 @@ fn main() {
 
             validate_args(&source_dir, &output_html);
 
+            log("N/A", "process begin");
             run_simulator(
                 &source_dir,
                 periods,
@@ -63,6 +64,7 @@ fn main() {
                 top_x,
                 &output_html,
             );
+            log("N/A", "process end");
         }
     }
 }

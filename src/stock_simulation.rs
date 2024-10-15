@@ -191,10 +191,12 @@ pub mod stock_simulator {
     fn output_results(top_x: usize, output_html: &PathBuf, predictions: &Vec<Prediction>) {
         // instead output an html file that can been seen in a browser with all the data hardcoded
         let most_common_box = Box::new(MostCommonResult {});
+        log("N/A", "determine top x begin");
         let prediction_calcs = get_highest_x(top_x, predictions, most_common_box);
+        log("N/A", "determine top x end");
+        log("N/A", "html creation begin");
         let html = get_html(&prediction_calcs);
-        println!("{:?}", prediction_calcs);
-        println!("{:?}", predictions);
+        log("N/A", "html creation end");
         save_results(output_html, &html);
     }
 
