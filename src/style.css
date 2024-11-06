@@ -47,6 +47,9 @@ h1 {
 .green {
     color: lightgreen;
 }
+.blue {
+    color: cornflowerblue;
+}
 @media (max-width: 500px) {
     .item-container {
         flex: 1 1 100%;
