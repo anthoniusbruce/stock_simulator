@@ -221,8 +221,8 @@ pub mod stock_simulator {
             let mut outer_div = Container::new(ContainerType::Div)
                 .with_attributes(vec![("class", "item-container")]);
 
-            let mut title_div =
-                Container::new(ContainerType::Div).with_attributes(vec![("class", "item-header")]);
+            let mut title_div = Container::new(ContainerType::Div)
+                .with_attributes(vec![("class", "item-header"), ("id", &*pred.symbol)]);
             title_div.add_html(&*pred.symbol);
             outer_div.add_container(title_div);
 
