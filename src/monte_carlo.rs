@@ -1,7 +1,7 @@
 pub mod simulations {
     use std::collections::BTreeMap;
 
-    use rand::Rng;
+    use rand::random_range;
 
     use crate::utilities::util::log;
 
@@ -97,13 +97,12 @@ pub mod simulations {
     // Method that randomly chooses period results from the input data in preparation for a simulation calculation
     pub(crate) fn simulate_period(input: &Vec<f64>, number_of_periods: u32) -> Vec<f64> {
         let mut ret = Vec::new();
-        let mut rng = rand::thread_rng();
         let count = input.len();
         if count == 0 {
             return ret;
         }
         for _index in 0..number_of_periods {
-            let rnd_index = rng.gen_range(0..count);
+            let rnd_index = random_range(0..count);
             ret.push(input[rnd_index]);
         }
         ret
